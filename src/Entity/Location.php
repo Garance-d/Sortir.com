@@ -28,14 +28,14 @@ class Location
     private ?float $longitude = null;
 
     /**
-     * @var Collection<int, Hangout>
+     * @var Collection<int, Event>
      */
-    #[ORM\OneToMany(targetEntity: Hangout::class, mappedBy: 'location')]
-    private Collection $hangouts;
+    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'location')]
+    private Collection $events;
 
     public function __construct()
     {
-        $this->hangouts = new ArrayCollection();
+        $this->events = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -92,29 +92,29 @@ class Location
     }
 
     /**
-     * @return Collection<int, Hangout>
+     * @return Collection<int, Event>
      */
-    public function getHangouts(): Collection
+    public function getEvents(): Collection
     {
-        return $this->hangouts;
+        return $this->events;
     }
 
-    public function addHangout(Hangout $hangout): static
+    public function addEvent(Event $event): static
     {
-        if (!$this->hangouts->contains($hangout)) {
-            $this->hangouts->add($hangout);
-            $hangout->setLocation($this);
+        if (!$this->events->contains($event)) {
+            $this->events->add($event);
+            $event->setLocation($this);
         }
 
         return $this;
     }
 
-    public function removeHangout(Hangout $hangout): static
+    public function removeevent(Event $event): static
     {
-        if ($this->hangouts->removeElement($hangout)) {
+        if ($this->events->removeElement($event)) {
             // set the owning side to null (unless already changed)
-            if ($hangout->getLocation() === $this) {
-                $hangout->setLocation(null);
+            if ($event->getLocation() === $this) {
+                $event->setLocation(null);
             }
         }
 

@@ -34,10 +34,10 @@ class User
     private ?bool $active = null;
 
     /**
-     * @var Collection<int, Hangout>
+     * @var Collection<int, Event>
      */
-    #[ORM\ManyToMany(targetEntity: Hangout::class, inversedBy: 'users')]
-    private Collection $hangouts;
+    #[ORM\ManyToMany(targetEntity: Event::class, inversedBy: 'users')]
+    private Collection $events;
 
     #[ORM\ManyToOne(inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: false)]
@@ -45,7 +45,7 @@ class User
 
     public function __construct()
     {
-        $this->hangouts = new ArrayCollection();
+        $this->events = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -126,25 +126,25 @@ class User
     }
 
     /**
-     * @return Collection<int, Hangout>
+     * @return Collection<int, Event>
      */
-    public function getHangouts(): Collection
+    public function getEvents(): Collection
     {
-        return $this->hangouts;
+        return $this->events;
     }
 
-    public function addHangout(Hangout $hangout): static
+    public function addEvent(Event $event): static
     {
-        if (!$this->hangouts->contains($hangout)) {
-            $this->hangouts->add($hangout);
+        if (!$this->events->contains($event)) {
+            $this->events->add($event);
         }
 
         return $this;
     }
 
-    public function removeHangout(Hangout $hangout): static
+    public function removeEvent(Event $event): static
     {
-        $this->hangouts->removeElement($hangout);
+        $this->events->removeElement($event);
 
         return $this;
     }

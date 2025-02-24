@@ -2,22 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\HangoutStatus;
+use App\Entity\EventStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<HangoutStatus>
+ * @extends ServiceEntityRepository<EventStatus>
  */
-class HangoutStatusRepository extends ServiceEntityRepository
+class EventStatusRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, HangoutStatus::class);
+        parent::__construct($registry, EventStatus::class);
     }
 
     //    /**
-    //     * @return HangoutStatus[] Returns an array of HangoutStatus objects
+    //     * @return EventStatus[] Returns an array of EventStatus objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -31,7 +31,7 @@ class HangoutStatusRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?HangoutStatus
+    //    public function findOneBySomeField($value): ?EventStatus
     //    {
     //        return $this->createQueryBuilder('h')
     //            ->andWhere('h.exampleField = :val')

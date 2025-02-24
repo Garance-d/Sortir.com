@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\HangoutStatusRepository;
+use App\Repository\EventStatusRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: HangoutStatusRepository::class)]
-class HangoutStatus
+#[ORM\Entity(repositoryClass: EventStatusRepository::class)]
+class EventStatus
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -19,14 +19,14 @@ class HangoutStatus
     private ?string $label = null;
 
     /**
-     * @var Collection<int, Hangout>
+     * @var Collection<int, Event>
      */
-    #[ORM\OneToMany(targetEntity: Hangout::class, mappedBy: 'status')]
-    private Collection $hangouts;
+    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'status')]
+    private Collection $events;
 
     public function __construct()
     {
-        $this->hangouts = new ArrayCollection();
+        $this->events = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -47,29 +47,29 @@ class HangoutStatus
     }
 
     /**
-     * @return Collection<int, Hangout>
+     * @return Collection<int, Event>
      */
-    public function getHangouts(): Collection
+    public function getEvents(): Collection
     {
-        return $this->hangouts;
+        return $this->events;
     }
 
-    public function addHangout(Hangout $hangout): static
+    public function addEvent(Event $event): static
     {
-        if (!$this->hangouts->contains($hangout)) {
-            $this->hangouts->add($hangout);
-            $hangout->setStatus($this);
+        if (!$this->events->contains($event)) {
+            $this->events->add($event);
+            $event->setStatus($this);
         }
 
         return $this;
     }
 
-    public function removeHangout(Hangout $hangout): static
+    public function removeEvent(Event $event): static
     {
-        if ($this->hangouts->removeElement($hangout)) {
+        if ($this->events->removeElement($event)) {
             // set the owning side to null (unless already changed)
-            if ($hangout->getStatus() === $this) {
-                $hangout->setStatus(null);
+            if ($event->getStatus() === $this) {
+                $event->setStatus(null);
             }
         }
 

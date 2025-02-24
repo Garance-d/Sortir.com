@@ -2,14 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\HangoutRepository;
+use App\Repository\EventRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: HangoutRepository::class)]
-class Hangout
+#[ORM\Entity(repositoryClass: EventRepository::class)]
+class Event
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -34,17 +34,17 @@ class Hangout
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\ManyToOne(inversedBy: 'hangouts')]
+    #[ORM\ManyToOne(inversedBy: 'events')]
     private ?Location $location = null;
 
     /**
      * @var Collection<int, User>
      */
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'hangouts')]
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'events')]
     private Collection $users;
 
-    #[ORM\ManyToOne(inversedBy: 'hangouts')]
-    private ?HangoutStatus $status = null;
+    #[ORM\ManyToOne(inversedBy: 'events')]
+    private ?EventStatus $status = null;
 
     public function __construct()
     {
@@ -152,7 +152,7 @@ class Hangout
     {
         if (!$this->users->contains($user)) {
             $this->users->add($user);
-            $user->addHangout($this);
+            $user->addEvent($this);
         }
 
         return $this;
@@ -161,18 +161,18 @@ class Hangout
     public function removeUser(User $user): static
     {
         if ($this->users->removeElement($user)) {
-            $user->removeHangout($this);
+            $user->removeEvent($this);
         }
 
         return $this;
     }
 
-    public function getStatus(): ?HangoutStatus
+    public function getStatus(): ?EventStatus
     {
         return $this->status;
     }
 
-    public function setStatus(?HangoutStatus $status): static
+    public function setStatus(?EventStatus $status): static
     {
         $this->status = $status;
 
