@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\HangoutRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -32,8 +34,22 @@ class Hangout
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $status = null;
+    #[ORM\ManyToOne(inversedBy: 'hangouts')]
+    private ?Location $location = null;
+
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'hangouts')]
+    private Collection $users;
+
+    #[ORM\ManyToOne(inversedBy: 'hangouts')]
+    private ?HangoutStatus $status = null;
+
+    public function __construct()
+    {
+        $this->users = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -112,12 +128,51 @@ class Hangout
         return $this;
     }
 
-    public function getStatus(): ?int
+    public function getLocation(): ?Location
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?Location $location): static
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): static
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->addHangout($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): static
+    {
+        if ($this->users->removeElement($user)) {
+            $user->removeHangout($this);
+        }
+
+        return $this;
+    }
+
+    public function getStatus(): ?HangoutStatus
     {
         return $this->status;
     }
 
-    public function setStatus(?int $status): static
+    public function setStatus(?HangoutStatus $status): static
     {
         $this->status = $status;
 

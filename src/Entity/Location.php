@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\LocationRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: LocationRepository::class)]
@@ -24,6 +26,17 @@ class Location
 
     #[ORM\Column(nullable: true)]
     private ?float $longitude = null;
+
+    /**
+     * @var Collection<int, Hangout>
+     */
+    #[ORM\OneToMany(targetEntity: Hangout::class, mappedBy: 'location')]
+    private Collection $hangouts;
+
+    public function __construct()
+    {
+        $this->hangouts = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -74,6 +87,36 @@ class Location
     public function setLongitude(?float $longitude): static
     {
         $this->longitude = $longitude;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Hangout>
+     */
+    public function getHangouts(): Collection
+    {
+        return $this->hangouts;
+    }
+
+    public function addHangout(Hangout $hangout): static
+    {
+        if (!$this->hangouts->contains($hangout)) {
+            $this->hangouts->add($hangout);
+            $hangout->setLocation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHangout(Hangout $hangout): static
+    {
+        if ($this->hangouts->removeElement($hangout)) {
+            // set the owning side to null (unless already changed)
+            if ($hangout->getLocation() === $this) {
+                $hangout->setLocation(null);
+            }
+        }
 
         return $this;
     }

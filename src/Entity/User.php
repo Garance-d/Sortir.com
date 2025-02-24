@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -30,6 +32,20 @@ class User
 
     #[ORM\Column]
     private ?bool $active = null;
+
+    /**
+     * @var Collection<int, Hangout>
+     */
+    #[ORM\ManyToMany(targetEntity: Hangout::class, inversedBy: 'users')]
+    private Collection $hangouts;
+
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    private ?Website $website = null;
+
+    public function __construct()
+    {
+        $this->hangouts = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -107,4 +123,41 @@ class User
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Hangout>
+     */
+    public function getHangouts(): Collection
+    {
+        return $this->hangouts;
+    }
+
+    public function addHangout(Hangout $hangout): static
+    {
+        if (!$this->hangouts->contains($hangout)) {
+            $this->hangouts->add($hangout);
+        }
+
+        return $this;
+    }
+
+    public function removeHangout(Hangout $hangout): static
+    {
+        $this->hangouts->removeElement($hangout);
+
+        return $this;
+    }
+
+    public function getWebsite(): ?Website
+    {
+        return $this->website;
+    }
+
+    public function setWebsite(?Website $website): static
+    {
+        $this->website = $website;
+
+        return $this;
+    }
+
 }
