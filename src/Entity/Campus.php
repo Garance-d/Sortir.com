@@ -2,26 +2,26 @@
 
 namespace App\Entity;
 
-use App\Repository\WebsiteRepository;
+use App\Repository\CampusRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: WebsiteRepository::class)]
-class Website
+#[ORM\Entity(repositoryClass: CampusRepository::class)]
+class Campus
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 50, nullable: true)]
+    #[ORM\Column(length: 50)]
     private ?string $name = null;
 
     /**
      * @var Collection<int, User>
      */
-    #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'website')]
+    #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'campus', orphanRemoval: true)]
     private Collection $users;
 
     public function __construct()
@@ -39,7 +39,7 @@ class Website
         return $this->name;
     }
 
-    public function setName(?string $name): static
+    public function setName(string $name): static
     {
         $this->name = $name;
 
@@ -58,7 +58,7 @@ class Website
     {
         if (!$this->users->contains($user)) {
             $this->users->add($user);
-            $user->setWebsite($this);
+            $user->setCampus($this);
         }
 
         return $this;
@@ -68,8 +68,8 @@ class Website
     {
         if ($this->users->removeElement($user)) {
             // set the owning side to null (unless already changed)
-            if ($user->getWebsite() === $this) {
-                $user->setWebsite(null);
+            if ($user->getCampus() === $this) {
+                $user->setCampus(null);
             }
         }
 

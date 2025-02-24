@@ -40,7 +40,8 @@ class User
     private Collection $hangouts;
 
     #[ORM\ManyToOne(inversedBy: 'users')]
-    private ?Website $website = null;
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Campus $campus = null;
 
     public function __construct()
     {
@@ -148,14 +149,14 @@ class User
         return $this;
     }
 
-    public function getWebsite(): ?Website
+    public function getCampus(): ?Campus
     {
-        return $this->website;
+        return $this->campus;
     }
 
-    public function setWebsite(?Website $website): static
+    public function setCampus(?Campus $campus): static
     {
-        $this->website = $website;
+        $this->campus = $campus;
 
         return $this;
     }
