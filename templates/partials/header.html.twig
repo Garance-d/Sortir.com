@@ -9,6 +9,7 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
                 <a class="nav-item nav-link active" href="{{ path('app_home') }}">Sites</a>
+                <a class="nav-item nav-link" href="{{ path('app_update', {'id': app.user.id }) }}">Profil</a>
                 <a class="nav-item nav-link" href="{{ path('app_home') }}">Accueil</a>
                 <a class="nav-item nav-link" href="{{ path('app_login') }}">Sign In</a>
                 <a class="nav-item nav-link" href="{{ path('app_register') }}">Sign Up</a>
