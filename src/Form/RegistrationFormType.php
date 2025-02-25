@@ -26,11 +26,11 @@ class RegistrationFormType extends AbstractType
     {
         $builder
             ->add('firstname', TextType::class, [
-                'label' => 'Nom',])
+                'label' => 'Firstname',])
             ->add('lastname', TextType::class, [
-                'label' => 'Prenom',])
+                'label' => 'Lastname',])
             ->add('username', TextType::class, [
-                'label' => 'Nom d\'utilisateur'
+                'label' => 'Username'
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Email',
@@ -81,8 +81,6 @@ class RegistrationFormType extends AbstractType
                 'multiple' => true,
                 'expanded' => false, // ou false selon votre besoin (checkbox ou select multiple)
             ])
-            ->add('firstName')
-            ->add('lastName')
             ->add('phone')
             ->add('campus', EntityType::class, [
                 'class' => Campus::class,

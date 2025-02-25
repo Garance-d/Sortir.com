@@ -8,14 +8,16 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-                <a class="nav-item nav-link active" href="{{ path('app_home') }}">Sites</a>
-                {% if app.user is not null %}
-                    <a class="nav-item nav-link" href="{{ path('app_update', {'id': app.user.id }) }}">Profil</a>
-                {% endif %}
                 <a class="nav-item nav-link" href="{{ path('app_home') }}">Accueil</a>
-                <a class="nav-item nav-link" href="{{ path('app_login') }}">Sign In</a>
-                <a class="nav-item nav-link" href="{{ path('app_register') }}">Sign Up</a>
-                <a class="nav-item nav-link " href="{{ path('app_logout') }}">Log Out</a>
+                <a class="nav-item nav-link active" href="{{ path('app_event') }}">Events</a>
+                {% if app.user is not null %}
+                    <a class="nav-item nav-link active" href="{{ path('app_event_create') }}">Create Event</a>
+                    <a class="nav-item nav-link" href="{{ path('app_update', {'id': app.user.id }) }}">Profile</a>
+                    <a class="nav-item nav-link " href="{{ path('app_logout') }}">Log Out</a>
+                    {%  else %}
+                        <a class="nav-item nav-link" href="{{ path('app_login') }}">Sign In</a>
+                        <a class="nav-item nav-link" href="{{ path('app_register') }}">Sign Up</a>
+                {% endif %}
             </div>
         </div>
     </div>

@@ -11,3 +11,14 @@ nav ul {
 nav li {
     margin-right: 1rem;
 }
+
+container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+contained {
+    justify-content: center;
+    width: 50%;
+}
