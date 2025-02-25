@@ -5,31 +5,31 @@
 {% block body %}
     {% for event in events %}
         <li>
-            Name {{ event.name }}
+            {{ event.name }}
         </li>
         <li>
-            Start {{ event.startAt|date('d/m/Y') }}
+            {{ event.startAt|date('d/m/Y') }}
         </li>
 {#        <li>#}
 {#            {{ event.duration }}#}
 {#        </li>#}
         <li>
-            End {{ event.registrationEndsAt|date('d/m/Y') }}
+            {{ event.registrationEndsAt|date('d/m/Y') }}
         </li>
         <li>
-            Max Users {{ event.maxUsers }}
+            {{ event.maxUsers }}
         </li>
         <li>
-            Description {{ event.description }}
+            {{ event.description }}
         </li>
         <li>
-            Location {{ event.location.street }}
+            {{ event.location.street }}
         </li>
 {#        <li>#}
 {#            {{ event.users }}#}
 {#        </li>#}
         <li>
-           Status {{ event.status.label }}
+           {{ event.status.label }}
         </li>
 
     {% endfor %}

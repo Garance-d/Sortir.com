@@ -31,7 +31,7 @@ class CreateEventFormType extends AbstractType
             ->add('duration', IntegerType::class, [
                 'label' => 'Durée (minutes)',
             ])
-            ->add('maxParticipants', IntegerType::class, [
+            ->add('maxUsers', IntegerType::class, [
                 'label' => 'Nombre max de participants',
             ])
             ->add('location', EntityType::class, [
