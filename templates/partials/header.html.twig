@@ -8,10 +8,10 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-                <a class="nav-item nav-link active" href="#">Sites</a>
-                <a class="nav-item nav-link" href="#">Accueil</a>
-                <a class="nav-item nav-link" href="#">Mon profil</a>
-                <a class="nav-item nav-link " href="#">Se déconnecter</a>
+                <a class="nav-item nav-link active" href="{{ path('app_login') }}">Sites</a>
+                <a class="nav-item nav-link" href="{{ path('app_home') }}">Accueil</a>
+                <a class="nav-item nav-link" href="{{ path('app_register') }}">Mon profil</a>
+                <a class="nav-item nav-link " href="{{ path('app_logout') }}">Se déconnecter</a>
             </div>
         </div>
     </div>
