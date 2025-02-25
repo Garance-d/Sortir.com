@@ -28,7 +28,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $lastName = null;
 
     #[ORM\Column(length: 15)]
-    private ?string $telephone = null;
+    private ?string $phone = null;
 
     #[ORM\Column(length: 50)]
     private ?string $email = null;
@@ -91,14 +91,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getTelephone(): ?string
+    public function getPhone(): ?string
     {
-        return $this->telephone;
+        return $this->phone;
     }
 
-    public function setTelephone(string $telephone): static
+    public function setPhone(string $phone): static
     {
-        $this->telephone = $telephone;
+        $this->phone = $phone;
 
         return $this;
     }
