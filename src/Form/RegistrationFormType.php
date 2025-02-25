@@ -55,8 +55,8 @@ class RegistrationFormType extends AbstractType
                 'invalid_message' => 'The password fields must match.',
                 'options' => ['attr' => ['autocomplete' => 'new-password']],
                 'required' => true,
-                'first_options'  => ['label' => 'Password'],
-                'second_options' => ['label' => 'Confirm Password'],
+                'first_options'  => ['label' => 'Mot de passe'],
+                'second_options' => ['label' => 'Confirmer mot de passe'],
                 'mapped' => false,
                 'constraints' => [
                     new NotBlank([
