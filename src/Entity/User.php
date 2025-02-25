@@ -27,9 +27,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 30)]
     private ?string $lastName = null;
 
-    #[ORM\Column(length: 30)]
-    private ?string $pseudo = null;
-
     #[ORM\Column(length: 15)]
     private ?string $phone = null;
 
@@ -59,6 +56,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Campus $campus = null;
+
+    #[ORM\Column(length: 50)]
+    private ?string $username = null;
 
     public function __construct()
     {
@@ -235,14 +235,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    public function getPseudo(): ?string
+    public function getUsername(): ?string
     {
-        return $this->pseudo;
+        return $this->username;
     }
 
-    public function setPseudo(string $pseudo): static
+    public function setUsername(string $username): static
     {
-        $this->pseudo = $pseudo;
+        $this->username = $username;
 
         return $this;
     }
