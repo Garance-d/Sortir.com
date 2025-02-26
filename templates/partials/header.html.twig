@@ -2,16 +2,22 @@
     <a class="navbar-brand" href="{{ path('app_home') }}">
         <img src="{{ asset('img/logo2.png') }}" width="60" height="60" alt="logo">
     </a>
-        <a class="navbar-brand" href="#">Villes</a>
+        <a class="navbar-brand" href="{{ path('app_home') }}">Cities</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-                <a class="nav-item nav-link active" href="{{ path('app_login') }}">Sites</a>
-                <a class="nav-item nav-link" href="{{ path('app_home') }}">Accueil</a>
-                <a class="nav-item nav-link" href="{{ path('app_register') }}">Mon profil</a>
-                <a class="nav-item nav-link " href="{{ path('app_logout') }}">Se déconnecter</a>
+                <a class="nav-item nav-link" href="{{ path('app_home') }}">Home</a>
+                <a class="nav-item nav-link active" href="{{ path('app_event') }}">Events</a>
+                {% if app.user is not null %}
+                    <a class="nav-item nav-link active" href="{{ path('app_event_create') }}">Create Event</a>
+                    <a class="nav-item nav-link" href="{{ path('app_update', {'id': app.user.id }) }}">Profile</a>
+                    <a class="nav-item nav-link " href="{{ path('app_logout') }}">Log Out</a>
+                    {%  else %}
+                        <a class="nav-item nav-link" href="{{ path('app_login') }}">Sign In</a>
+                        <a class="nav-item nav-link" href="{{ path('app_register') }}">Sign Up</a>
+                {% endif %}
             </div>
         </div>
     </div>
