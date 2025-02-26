@@ -22,6 +22,7 @@ final class EventController extends AbstractController
             'events' => $events,
         ]);
     }
+
     #[Route('/create', name: 'app_event_create')]
     public function createEvent(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -36,6 +37,23 @@ final class EventController extends AbstractController
         }
         return $this->render('event/create.html.twig', [
             'createEventForm' => $form,
+        ]);
+    }
+
+    #[Route('/event/index', name: 'app_event_index')]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $event = new Event();
+        $form = $this->createForm(RegistrationFormType::class, $event);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+        }
+
+        $events = $entityManager->getRepository(Event::class)->findAll();
+
+        return $this->render('event/index.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
 }
