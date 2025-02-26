@@ -1,53 +1,168 @@
+/* Styles généraux */
 body {
-    background-color: skyblue;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #6db3f2, #1e69de);
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    padding: 20px;
 }
 
+/* Conteneur principal */
+.container, .register-container {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Styles pour l'inscription */
+.register-container {
+    max-width: 500px;
+    text-align: left;
+}
+
+/* Titre */
+h1 {
+    color: #1e69de;
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Labels */
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+/* Champs de saisie */
+input[type="email"],
+input[type="password"],
+input[type="text"],
+input[type="tel"],
+select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+/* Checkbox */
+.checkbox {
+    display: flex;
+    align-items: center;
+    margin: 15px 0;
+    font-size: 14px;
+}
+
+.checkbox input {
+    margin-right: 10px;
+}
+
+/* Boutons */
+button {
+    background: #1e69de;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    transition: background 0.3s ease-in-out;
+}
+
+button:hover {
+    background: #1558b0;
+}
+
+/* Bouton spécifique à l'inscription */
+.register-container button {
+    background: #1e69de;
+}
+
+.register-container button:hover {
+    background: #1558b0;
+}
+
+/* Lien d'inscription */
+p a {
+    color: #1e69de;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+p a:hover {
+    text-decoration: underline;
+}
+
+/* Messages d'alerte */
+.alert {
+    background: #d9edf7;
+    color: #31708f;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+/* Menu de navigation */
 nav ul {
     display: flex;
     list-style: none;
     padding-left: 0;
+    justify-content: center;
 }
 
 nav li {
     margin-right: 1rem;
 }
 
-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* ✅ Responsive Design avec Media Queries */
+@media screen and (max-width: 768px) {
+    body {
+        height: auto;
+        padding: 10px;
+        flex-direction: column;
+    }
+
+    .container, .register-container {
+        width: 90%;
+        max-width: 100%;
+        padding: 20px;
+    }
+
+    button {
+        padding: 14px;
+        font-size: 18px;
+    }
+
+    input[type="email"],
+    input[type="password"],
+    input[type="text"],
+    input[type="tel"],
+    select {
+        font-size: 18px;
+    }
 }
 
-/* Style pour les labels à droite */
-.form-group {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1rem;
-}
+@media screen and (max-width: 480px) {
+    h1 {
+        font-size: 20px;
+    }
 
-.form-control {
-    flex: 1;
-    max-width: 60%;
-}
-
-.form-label {
-    text-align: right;
-    margin-left: 15px;
-    margin-bottom: 0;
-    flex: 1;
-}
-
-/* Centrage du formulaire */
-.form-container {
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-/* Cadre avec ombre portée */
-.form-card {
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    background-color: #fff;
-    margin-top: 30px;
+    button {
+        padding: 10px;
+        font-size: 16px;
+    }
 }
