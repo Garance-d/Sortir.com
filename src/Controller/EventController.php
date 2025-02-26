@@ -5,7 +5,6 @@ namespace App\Controller;
 
 use App\Entity\Event;
 use App\Form\CreateEventFormType;
-use App\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,25 +38,5 @@ final class EventController extends AbstractController
             'createEventForm' => $form,
         ]);
     }
-
-    #[Route('/event/index', name: 'app_event_index')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $event = new Event();
-        $form = $this->createForm(RegistrationFormType::class, $event);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-        }
-
-        $events = $entityManager->getRepository(Event::class)->findAll();
-
-        return $this->render('event/index.html.twig', [
-            'form' => $form->createView(),
-        ]);
-
-    }
-
-
 }
 
