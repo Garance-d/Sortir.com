@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use App\Entity\Event;
 use App\Form\CreateEventFormType;
+use App\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
