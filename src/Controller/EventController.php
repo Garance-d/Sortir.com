@@ -40,7 +40,7 @@ final class EventController extends AbstractController
         ]);
     }
 
-    #[Route('/index', name: 'app_event_index')]
+    #[Route('/event/index', name: 'app_event_index')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $event = new Event();
@@ -49,6 +49,8 @@ final class EventController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
         }
+
+        $events = $entityManager->getRepository(Event::class)->findAll();
 
         return $this->render('event/index.html.twig', [
             'form' => $form->createView(),

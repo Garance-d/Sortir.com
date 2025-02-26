@@ -57,7 +57,6 @@ class RegistrationFormType extends AbstractType
             ])
 
             ->add('search', SubmitType::class, [
-                'class' => Filter::class,
                 'label' => 'Rechercher',
                 'attr' => ['class' => 'btn btn-primary'],
             ])
