@@ -3,8 +3,10 @@
 namespace App\Form;
 
 use App\Entity\Campus;
+use App\Entity\Filter;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -25,82 +27,39 @@ class RegistrationFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('firstname', TextType::class, [
-                'label' => 'Firstname',])
-            ->add('lastname', TextType::class, [
-                'label' => 'Lastname',])
-            ->add('username', TextType::class, [
-                'label' => 'Username'
-            ])
-            ->add('email', EmailType::class, [
-                'label' => 'Email',
-            ])
-            ->add('phone', TelType::class, [
-                'label' => 'Telephone',
-            ])
+
             ->add('campus', EntityType::class, [
-                'class' => Campus::class,
-                'choice_label' => 'name',
-                'label' => 'Campus',
+                'class' => Filter::class,
+                'label' => 'Site : ',
                 'placeholder' => 'Sélectionnez votre campus',
+                'attr' => ['class' => 'placeholder'],
             ])
-            ->add('agreeTerms', CheckboxType::class, [
-                'mapped' => false,
-                'constraints' => [
-                    new IsTrue([
-                        'message' => 'You should agree to our terms.',
-                    ]),
-                ],
+
+            ->add('event', SearchType::class, [
+                'class' => Filter::class,
+                'attr' => ['class' => 'search'],
+                'label' => 'Le nom de la sortie contient',
             ])
-            ->add('plainPassword', RepeatedType::class, [
-                'type' => PasswordType::class,
-                'invalid_message' => 'The password fields must match.',
-                'options' => ['attr' => ['autocomplete' => 'new-password']],
-                'required' => true,
-                'first_options'  => ['label' => 'Password'],
-                'second_options' => ['label' => 'Confirm Password'],
-                'mapped' => false,
-                'attr' => ['autocomplete' => 'new-password'],
-                'constraints' => [
-                    new NotBlank([
-                        'message' => 'Please enter a password',
-                    ]),
-                    new Length([
-                        'min' => 6,
-                        'minMessage' => 'Your password should be at least {{ limit }} characters',
-                        // max length allowed by Symfony for security reasons
-                        'max' => 4096,
-                    ]),
-                ],
-            ])
-            ->add('roles', ChoiceType::class, [
-                'choices' => [
-                    'User' => 'ROLE_USER',
-                    'Admin' => 'ROLE_ADMIN',
-                ],
+
+            ->add('eventCheckb', ChoiceType::class, [
+                'class' => Filter::class,
                 'multiple' => true,
-                'expanded' => false, // ou false selon votre besoin (checkbox ou select multiple)
-            ])
-            ->add('phone')
-            ->add('campus', EntityType::class, [
-                'class' => Campus::class,
-                'multiple' => false,
-                'expanded' => false, // Afficher sous forme de cases à cocher
-                'choice_label' => 'name',
+                'expanded' => true, // Afficher sous forme de cases à cocher
+                'choices_label' => [
+                    'Sorties dont je suis l organisteur/trice'  => 'value1',
+                    'Sorties auquelles je suis inscrit/e' => 'value2',
+                    'Sorties auquelles je ne suis pas inscrit/e' => 'value3',
+                    'Sorties passee' => 'value4',
+                ],
                 'attr' => [
                     'class' => 'container',
                 ]
             ])
-            ->add('agreeTerms', CheckboxType::class, [
-                'mapped' => false,
-                'constraints' => [
-                    new IsTrue([
-                        'message' => 'You should agree to our terms.',
-                    ]),
-                ],
-            ])
-            ->add('save', SubmitType::class, [
-                'label' => 'SignUp',
+
+            ->add('search', SubmitType::class, [
+                'class' => Filter::class,
+                'label' => 'Rechercher',
+                'attr' => ['class' => 'btn btn-primary'],
             ])
 
         ;
