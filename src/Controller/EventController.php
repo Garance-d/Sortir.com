@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Controller;
 
 use App\Entity\Event;
@@ -38,3 +39,4 @@ final class EventController extends AbstractController
         ]);
     }
 }
+
