@@ -7,12 +7,12 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav">
-                <a class="nav-item nav-link active" href="#">Sites</a>
-                <a class="nav-item nav-link" href="#">Accueil</a>
-                <a class="nav-item nav-link" href="#">Mon profil</a>
-                <a class="nav-item nav-link " href="#">Se déconnecter</a>
-            </div>
+            <ul class="navbar-nav">
+                <li> <a class="nav-item nav-link" href="{{ path('app_home') }}">Accueil</a> </li>
+                <li> <a class="nav-item nav-link active" href="{{ path('app_sites') }}">Sites</a> </li>
+                <li> <a class="nav-item nav-link" href="{{ path('app_home') }}">Mon profil</a> </li>
+                <li> <a class="nav-item nav-link " href="{{ path('app_home') }}">Se déconnecter</a> </li>
+            </ul>
         </div>
     </div>
 </nav>
