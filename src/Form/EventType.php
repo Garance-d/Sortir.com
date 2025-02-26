@@ -32,8 +32,6 @@ class EventType extends AbstractType
                 'expanded' => true,
                 'multiple' => true,
 
-            return $builder->render('home/index.html.twig', [
-                'form' => $form
             ]);
 
     }
