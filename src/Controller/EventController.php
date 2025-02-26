@@ -1,30 +1,42 @@
 <?php
 
-declare(strict_types=1);
 
 namespace App\Controller;
 
 use App\Entity\Event;
-use Doctrine\ORM\Events;
-use Doctrine\ORM\Query\Filter\SQLFilter;
-use http\Env\Request;
+use App\Form\CreateEventFormType;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-class EventController extends AbstractController
+final class EventController extends AbstractController
 {
-    #[Route('/events')]
-    public function index(): Response
+    #[Route('/event', name: 'app_event', methods: ['GET'])]
+    public function index(EntityManagerInterface $entityManager): Response
     {
-        return $this->render('pages/index.html.twig');
+        $events = $entityManager->getRepository(Event::class)->findAll();
+
+        return $this->render('event/index.html.twig', [
+            'events' => $events,
+        ]);
     }
+    #[Route('/create', name: 'app_event_create')]
+    public function createEvent(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $event = new Event();
+        $form = $this->createForm(CreateEventFormType::class, $event);
+        $form->handleRequest($request);
 
-
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($event);
+            $entityManager->flush();
+            return $this->redirectToRoute('app_event');
+        }
+        return $this->render('event/create.html.twig', [
+            'createEventForm' => $form,
+        ]);
+    }
 }
-
-
-
-
-
 

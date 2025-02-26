@@ -29,7 +29,7 @@ class Event
     private ?\DateTimeImmutable $registrationEndsAt = null;
 
     #[ORM\Column]
-    private ?int $maxParticipants = null;
+    private ?int $maxUsers = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
@@ -104,14 +104,14 @@ class Event
         return $this;
     }
 
-    public function getMaxParticipants(): ?int
+    public function getMaxUsers(): ?int
     {
-        return $this->maxParticipants;
+        return $this->maxUsers;
     }
 
-    public function setMaxParticipants(int $maxParticipants): static
+    public function setMaxUsers(int $maxUsers): static
     {
-        $this->maxParticipants = $maxParticipants;
+        $this->maxUsers = $maxUsers;
 
         return $this;
     }
