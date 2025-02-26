@@ -3,13 +3,17 @@
 {% block title %}Create{% endblock %}
 
 {% block body %}
-    <h1>Create</h1>
+    <div class="form-container">
+        <div class="form-card">
+            <h1>Create</h1>
 
-    {{ form_errors(createEventForm) }}
+            {{ form_errors(createEventForm) }}
 
-    {{ form_start(createEventForm) }}
+            {{ form_start(createEventForm) }}
 
-    {{ form_widget(createEventForm) }}
+            {{ form_widget(createEventForm) }}
 
-    {{ form_end(createEventForm) }}
+            {{ form_end(createEventForm) }}
+        </div>
+    </div>
 {% endblock %}

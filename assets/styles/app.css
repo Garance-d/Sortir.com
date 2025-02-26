@@ -18,7 +18,36 @@ container {
     justify-content: center;
 }
 
-contained {
-    justify-content: center;
-    width: 50%;
+/* Style pour les labels à droite */
+.form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.form-control {
+    flex: 1;
+    max-width: 60%;
+}
+
+.form-label {
+    text-align: right;
+    margin-left: 15px;
+    margin-bottom: 0;
+    flex: 1;
+}
+
+/* Centrage du formulaire */
+.form-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Cadre avec ombre portée */
+.form-card {
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #fff;
+    margin-top: 30px;
 }

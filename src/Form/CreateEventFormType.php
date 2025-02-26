@@ -3,7 +3,9 @@ namespace App\Form;
 
 use App\Entity\EventStatus;
 use App\Entity\Location;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -22,6 +24,9 @@ class CreateEventFormType extends AbstractType
             ->add('name', TextType::class, [
                 'label' => 'Nom',
             ])
+            ->add('description', TextareaType::class, [
+                'label' => 'Description',
+            ])
             ->add('startAt', DateTimeType::class, [
                 'widget' => 'single_text', // Enables HTML5 date picker
             ])
@@ -34,9 +39,8 @@ class CreateEventFormType extends AbstractType
             ->add('maxUsers', IntegerType::class, [
                 'label' => 'Nombre max de participants',
             ])
-            ->add('location', EntityType::class, [
-                'class' => Location::class,
-                'choice_label' => 'name', // Adjust based on the field you want to display
+            ->add('location', LocationType::class, [ // Ajoute le sous-formulaire
+                'label' => false, // Supprime le label principal
             ])
             ->add('users', CollectionType::class, [
                 'entry_type' => TextType::class, // Or another form type for users
