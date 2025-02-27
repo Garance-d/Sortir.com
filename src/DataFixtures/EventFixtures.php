@@ -4,15 +4,23 @@ namespace App\DataFixtures;
 
 use App\Entity\Campus;
 use App\Entity\User;
+use Doctrine\ORM\EntityManager;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use App\Entity\Event;
 use App\Entity\EventStatus;
 use App\Entity\City;
 use App\Entity\Location;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class EventFixtures extends Fixture
 {
+    private UserPasswordHasherInterface $passwordHasher;
+
+    public function __construct(UserPasswordHasherInterface $passwordHasher)
+    {
+        $this->passwordHasher = $passwordHasher;
+    }
     public function load(ObjectManager $manager): void
     {
         $faker = \Faker\Factory::create('fr_FR');
@@ -85,26 +93,28 @@ class EventFixtures extends Fixture
         // Flush pour persister tous les événements
         $manager->flush();
 
-//        // Créer et persister les utilisateurs
-//        $users = [];
-//        for ($i = 1; $i <= 5; $i++) {
-//            $user = new User();
-//            $user->setFirstName($faker->firstName());
-//            $user->setLastName($faker->lastName());
-//            $user->setEmail($faker->email());
-//            $user->setUsername($faker->userName());
-//            $user->setPassword($faker->password());
-//            $user->setRoles(['ROLE_USER']);
-//            $user->setCampus($faker->randomElement($campuses));  // Associer un campus existant
-//
-//            // Associer un événement existant à cet utilisateur
-//            $user->addEvent($faker->randomElement($events));
-//
-//            $manager->persist($user);
-//            $users[] = $user;
-//        }
+        // Créer et persister les utilisateurs
+        $users = [];
+        for ($i = 1; $i <= 5; $i++) {
+            $user = new User();
+            $user->setFirstName($faker->firstName());
+            $user->setLastName($faker->lastName());
+            $user->setPhone($faker->phoneNumber());
+            $user->setEmail($faker->email());
+            $user->setUsername($faker->userName());
+            $plainPassword = 'password123'; // Utilise une valeur fixe ou random
+            $hashedPassword = $this->passwordHasher->hashPassword($user, $plainPassword);
+            $user->setPassword($hashedPassword);
+            $user->setRoles(['ROLE_USER']);
+            $user->setAdministrator(false);
+            $user->setActive(true);
+            $campus = $faker->randomElement($campuses); // Prend un campus déjà créé
+            $user->setCampus($campus);
 
-        // Flush final pour persister tous les utilisateurs
+            $manager->persist($user);
+            $users[] = $user;
+        }
+
         $manager->flush();
     }
 }

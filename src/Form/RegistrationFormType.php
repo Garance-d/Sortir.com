@@ -48,15 +48,12 @@ class RegistrationFormType extends AbstractType
                 'type' => PasswordType::class,
                 'invalid_message' => 'The password fields must match.',
                 'options' => ['attr' => ['autocomplete' => 'new-password']],
-                'required' => true,
+                'required' => false,
                 'first_options'  => ['label' => 'Password'],
                 'second_options' => ['label' => 'Confirm Password'],
                 'mapped' => false,
                 'attr' => ['autocomplete' => 'new-password'],
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Please enter a password',
-                    ]),
                     new Length([
                         'min' => 6,
                         'minMessage' => 'Your password should be at least {{ limit }} characters',
@@ -73,16 +70,6 @@ class RegistrationFormType extends AbstractType
                 'multiple' => true,
                 'expanded' => false, // ou false selon votre besoin (checkbox ou select multiple)
             ])
-            ->add('phone')
-            ->add('campus', EntityType::class, [
-                'class' => Campus::class,
-                'multiple' => false,
-                'expanded' => false, // Afficher sous forme de cases à cocher
-                'choice_label' => 'name',
-                'attr' => [
-                    'class' => 'container',
-                ]
-            ])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
                 'constraints' => [
@@ -93,9 +80,7 @@ class RegistrationFormType extends AbstractType
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'SignUp',
-            ])
-
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
