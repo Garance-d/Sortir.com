@@ -4,6 +4,12 @@
 
 {% block body %}
     <div>
+
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn">Submit</button>
+        {{ form_end(form) }}
+
     </div>
 
     <div class="container mt-4">
