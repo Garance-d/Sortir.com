@@ -3,6 +3,14 @@
 {% block title %}Hello EventController!{% endblock %}
 
 {% block body %}
+
+    <div>
+        {{ form_start(filterForm) }}
+        {{ form_widget(filterForm) }}
+        <button class="btn">Submit</button>
+        {{ form_end(filterForm) }}
+    </div>
+
     <div class="container mt-4">
         <div class="card">
             <div class="card-body">
