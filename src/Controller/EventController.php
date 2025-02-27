@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Event;
 use App\Entity\Filter;
+use App\Entity\User;
 use App\Form\CreateEventFormType;
 use App\Form\FilterType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -60,10 +61,11 @@ final class EventController extends AbstractController
             'filterForm' => $form->createView(),
         ]);
     }
-    #[Route('/create', name: 'app_event_create')]
-    public function createEvent(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/create/{id}', name: 'app_event_create', requirements: ['id' => '\d+'])]
+    public function createEvent(int $id, Request $request, EntityManagerInterface $entityManager): Response
     {
         $event = new Event();
+        $user = $entityManager->getRepository(User::class)->find($id);
         $form = $this->createForm(CreateEventFormType::class, $event);
         $form->handleRequest($request);
 
