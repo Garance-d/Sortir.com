@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Controller;
 
 use App\Entity\Event;
@@ -65,13 +66,17 @@ final class EventController extends AbstractController
     public function createEvent(int $id, Request $request, EntityManagerInterface $entityManager): Response
     {
         $event = new Event();
-        $user = $entityManager->getRepository(User::class)->find($id);
+        $currentUser = $entityManager->getRepository(User::class)->find($id);
+
+        $event->setHost($currentUser);
+
         $form = $this->createForm(CreateEventFormType::class, $event);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($event);
             $entityManager->flush();
+
             return $this->redirectToRoute('app_event');
         }
         return $this->render('event/create.html.twig', [
@@ -84,6 +89,7 @@ final class EventController extends AbstractController
     {
         return $this->render('event/show.html.twig', [
             'event' => $event,
+            'location' => $event->getLocation(),
         ]);
     }
 
