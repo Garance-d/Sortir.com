@@ -105,7 +105,30 @@ button:hover {
     height: auto;               /* Garde les proportions de l'image */
 }
 
-/* Responsive */
+/* Centrer tout le contenu dans le conteneur */
+.profile_structure {
+    text-align: center;
+    max-width: 600px; /* Limiter la largeur pour que le texte ne soit pas trop étendu */
+    margin: 0 auto; /* Centrer horizontalement le conteneur */
+    padding: 20px;
+}
+
+/* Enlever les puces de la liste */
+.profile_structure ul {
+    list-style-type: none; /* Supprimer les puces */
+    padding: 0; /* Enlever le padding par défaut de la liste */
+    margin-top: 60px; /* Enlever la marge par défaut de la liste */
+}
+
+/* Style des éléments de la liste */
+.profile_structure li {
+    display: flex; /* Utiliser flexbox pour aligner les éléments horizontalement */
+    justify-content: space-between; /* Espacement égal entre les titres et les valeurs */
+    margin: 10px 0; /* Espacement vertical entre chaque ligne */
+    font-size: 18px; /* Taille de police confortable */
+}
+
+    /* Responsive */
 @media (max-width: 768px) {
     .container {
         width: 100%;

@@ -39,6 +39,16 @@ class RegistrationController extends AbstractController
             'registrationForm' => $form,
         ]);
     }
+
+    #[Route('/profile/{id}', name: 'app_profile', requirements: ['id' => '\d+'])]
+    public function profile(int $id, Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+    {
+        $user = $entityManager->getRepository(User::class)->find($id);
+        return $this->render('profile/profile.html.twig', [
+            'user' => $user,
+            'profile_id' => $id,
+        ]);
+    }
     #[Route('/update/{id}', name: 'app_update', requirements: ['id' => '\d+'])]
     public function update(int $id, Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
