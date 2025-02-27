@@ -43,19 +43,19 @@ final class EventController extends AbstractController
     }
 
     #[Route('/event/index', name: 'app_event_index')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new (Request $request, EntityManagerInterface $entityManager): Response
     {
         $event = new Event();
         $form = $this->createForm(RegistrationFormType::class, $event);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+       if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-        }
+       }
 
         $events = $entityManager->getRepository(Event::class)->findAll();
 
-        return $this->render('event/index.html.twig', [
-            'form' => $form->createView(),
+       return $this->render('event/index.html.twig', [
+            'form' => $form,
         ]);
     }
 

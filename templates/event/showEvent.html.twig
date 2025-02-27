@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello EventController!{% endblock %}
+
+{% block body %}
+
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-body">
+            <div class="display-event">
+                <h2 class="card-title">Afficher une sortie</h2>
+
+                <ul class="list-group list-group-flush">
+                    <li class="name-event">Nom de la sortie:  {{ event.name }}</li>
+                    <li class="date-hours-event">Date et heure de la sortie: {{ event.startAt }}</li>
+                    <li class="date-limit-inscription">Date limite d'inscription: {{ event.registrationEndsAtr }}</li>
+                    <li class="nbr-place">Nombre de places: {{ event.maxUsers }}</li>
+                    <li class="duration">Durée: {{ event.duration }}</li>
+                    <li class="description">Description et info : {{ event.description }}</li>
+                    <li class="City">Ville organisatrice : {{ location.name }}</li>
+                    <li class="place">Lieu : {{ location.name }}</li>
+                    <li class="street">Rue : {{ location.street }}</li>
+                    <li class="postal-code">Code postal : {{ city.postalCode }}</li>
+                    <li class="latitude">Latitude : {{ event.latitude }}</li>
+                    <li class="longitude">Longitude : {{ event.longitude }}</li>
+                </ul>
+            </div>
+            <div class="list-user-map-api">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Pseudo</th>
+                        <th>Nom</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for event in events %}
+                        <tr>
+                            <td>{{ event.user }}</td>
+                            <td>{{ event.name }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center">Aucun événement trouvé.</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
