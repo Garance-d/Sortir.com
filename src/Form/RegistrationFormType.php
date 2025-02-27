@@ -3,8 +3,10 @@
 namespace App\Form;
 
 use App\Entity\Campus;
+use App\Entity\Filter;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -20,25 +22,23 @@ use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
+
 class RegistrationFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-
             ->add('campus', EntityType::class, [
                 'class' => Filter::class,
                 'label' => 'Site : ',
                 'placeholder' => 'Sélectionnez votre campus',
                 'attr' => ['class' => 'placeholder'],
             ])
-
             ->add('event', SearchType::class, [
                 'class' => Filter::class,
                 'attr' => ['class' => 'search'],
                 'label' => 'Le nom de la sortie contient',
             ])
-
             ->add('eventCheckb', ChoiceType::class, [
                 'class' => Filter::class,
                 'multiple' => true,
@@ -53,15 +53,11 @@ class RegistrationFormType extends AbstractType
                     'class' => 'container',
                 ]
             ])
-
             ->add('search', SubmitType::class, [
                 'label' => 'Rechercher',
                 'attr' => ['class' => 'btn btn-primary'],
-            ])
-
-        ;
+            ]);
     }
-
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([

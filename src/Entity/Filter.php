@@ -78,8 +78,4 @@ class Filter
 
         return $this;
     }
-
-
-
-
 }

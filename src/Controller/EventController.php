@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 use App\Entity\Event;
+use App\Entity\Filter;
 use App\Form\CreateEventFormType;
 use App\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -57,5 +58,44 @@ final class EventController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+//    #[Route('/event/index', name: 'filtre', methods: ['GET'])]
+//    public function new(Request $request, EntityManagerInterface $entityManager): Response
+//    {
+//
+//        $filter = new Filter();
+//
+//        $filter->setCampus('Nantes');
+//        $filter->setEvent('dezdez');
+//        $filter->setDate(date('Y-m-d'));
+//        $filter->setEventCheckb(is_bool(true));
+//
+//        dump($filter);
+//
+//
+//        $filterForm = $this->createForm(RegistrationFormType::class, $filter);
+//        $filterForm->handleRequest($request);
+//
+//        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
+//
+//            //$data = $form->getData();
+//            $entityManager->persist($filter);
+//            $entityManager->flush();
+//
+//            return $this->redirectToRoute('app_event_index');
+//
+//        }
+//
+//        $filter = $entityManager->getRepository(Event::class)->findAll();
+//
+//        return $this->render('event/index.html.twig', [
+//            'form' => $filterForm->createView(),
+//            'events' => $filter,
+//        ]);
+//    }
+
+
+
+
 }
 
