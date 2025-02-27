@@ -1,9 +1,21 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Détail d'un évènement{% endblock %}
 {% block title %}Hello EventController!{% endblock %}
 
 {% block body %}
 
+<h1>{{ event.name }}</h1>
+<p>{{ event.description }}</p>
+{#<p>Date: {{ event.date|date('d-m-Y') }}</p>#}
+{#<p>Campus: {{ event.campus.name }}</p>#}
+
+<a href="{{ path('app_event_edit', {'id': event.id}) }}">Modifier cet événement</a>
+
+<form method="post" action="{{ path('app_event_delete', {'id': event.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet événement ?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ event.id) }}">
+    <button type="submit">Supprimer</button>
+</form>
     <div class="container mt-4">
         <div class="card">
             <div class="card-body">

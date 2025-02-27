@@ -89,7 +89,7 @@ final class EventController extends AbstractController
     #[Route('/event/{id}/edit', name: 'app_event_edit')]
     public function edit(Request $request, Event $event, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(CreateEventFormType::class, $event); // Assurez-vous d'avoir un formulaire pour l'édition
+        $form = $this->createForm(CreateEventFormType::class, $event);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
