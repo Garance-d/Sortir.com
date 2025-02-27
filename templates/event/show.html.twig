@@ -1,7 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Détail d'un évènement{% endblock %}
-{% block title %}Hello EventController!{% endblock %}
+{% block user %}Hello EventController!{% endblock %}
+
+
 
 {% block body %}
 
@@ -10,55 +12,49 @@
 {#<p>Date: {{ event.date|date('d-m-Y') }}</p>#}
 {#<p>Campus: {{ event.campus.name }}</p>#}
 
-<a href="{{ path('app_event_edit', {'id': event.id}) }}">Modifier cet événement</a>
 
-<form method="post" action="{{ path('app_event_delete', {'id': event.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet événement ?');">
-    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ event.id) }}">
-    <button type="submit">Supprimer</button>
-</form>
     <div class="container mt-4">
         <div class="card">
             <div class="card-body">
-            <div class="display-event">
-                <h2 class="card-title">Afficher une sortie</h2>
+                <div class="display-event">
+                    <h2 class="card-title">Afficher une sortie</h2>
 
-                <ul class="list-group list-group-flush">
-                    <li class="name-event">Nom de la sortie:  {{ event.name }}</li>
-                    <li class="date-hours-event">Date et heure de la sortie: {{ event.startAt }}</li>
-                    <li class="date-limit-inscription">Date limite d'inscription: {{ event.registrationEndsAt }}</li>
-                    <li class="nbr-place">Nombre de places: {{ event.maxUsers }}</li>
-                    <li class="duration">Durée: {{ event.duration }}</li>
-                    <li class="description">Description et info : {{ event.description }}</li>
-                    <li class="City">Ville organisatrice : {{ location.name }}</li>
-                    <li class="place">Lieu : {{ location.name }}</li>
-                    <li class="street">Rue : {{ location.street }}</li>
-                    <li class="postal-code">Code postal : {{ city.postalCode }}</li>
-                    <li class="latitude">Latitude : {{ location.latitude }}</li>
-                    <li class="longitude">Longitude : {{ location.longitude }}</li>
-                </ul>
-            </div>
-            <div class="list-user-map-api">
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>Pseudo</th>
-                        <th>Nom</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for event in events %}
-                        <tr>
-                            <td>{{ user.user }}</td>
-                            <td>{{ event.name }}</td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="7" class="text-center">Aucun événement trouvé.</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                    <ul class="list-group list-group-flush" class=".list-group-flush" >
+                        <li class="name-event">Nom de la sortie:  {{ event.name }}</li>
+                        <li class="date-hours-event">Date et heure de la sortie: {{ event.startAt |date('d/m/Y') }}</li>
+                        <li class="date-limit-inscription">Date limite d'inscription: {{ event.registrationEndsAt |date('d/m/Y')}}</li>
+                        <li class="nbr-place">Nombre de places: {{ event.maxUsers }}</li>
+                        <li class="duration">Durée: {{ event.duration }}</li>
+                        <li class="description">Description et info : {{ event.description }}</li>
+    {#                    <li class="City">Ville organisatrice : {{ location.name }}</li>#}
+    {#                    <li class="place">Lieu : {{ location.name }}</li>#}
+    {#                    <li class="street">Rue : {{ location.street }}</li>#}
+    {#                    <li class="postal-code">Code postal : {{ city.postalCode }}</li>#}
+    {#                    <li class="latitude">Latitude : {{ location.latitude }}</li>#}
+    {#                    <li class="longitude">Longitude : {{ location.longitude }}</li>#}
+                    </ul>
+
+                </div>
             </div>
         </div>
+    </div>
+
+    {% block stylesheets%}
+    <div class="container mt-4" id="map">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+              integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+              crossorigin=""/>
+
+        {% block javascripts %}
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+                integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+                crossorigin=""></script>
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+        <script src="{{ asset('app.js') }}"></script>
     </div>
 {% endblock %}
