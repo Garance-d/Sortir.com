@@ -25,12 +25,12 @@ class RegistrationFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('firstname', TextType::class, [
-                'label' => 'Firstname',])
             ->add('lastname', TextType::class, [
-                'label' => 'Lastname',])
+                'label' => 'Nom',])
+            ->add('firstname', TextType::class, [
+                'label' => 'Prénom',])
             ->add('username', TextType::class, [
-                'label' => 'Username'
+                'label' => 'Pseudo'
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Email',
@@ -42,19 +42,19 @@ class RegistrationFormType extends AbstractType
                 'class' => Campus::class,
                 'choice_label' => 'name',
                 'label' => 'Campus',
-                'placeholder' => 'Sélectionnez votre campus',
+                'placeholder' => 'Choisissez votre campus',
             ])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
                 'constraints' => [
                     new IsTrue([
-                        'message' => 'You should agree to our terms.',
+                        'message' => 'Vous devez accepter nos conditions.',
                     ]),
                 ],
             ])
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
-                'invalid_message' => 'The password fields must match.',
+                'invalid_message' => 'Les champs de mot de passe doivent correspondre.',
                 'options' => ['attr' => ['autocomplete' => 'new-password']],
                 'required' => true,
                 'first_options'  => ['label' => 'Mot de passe'],
@@ -63,7 +63,7 @@ class RegistrationFormType extends AbstractType
                 'attr' => ['autocomplete' => 'new-password'],
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'Please enter a password',
+                        'message' => 'Veuillez entrer un mot de passe',
                     ]),
                     new Length([
                         'min' => 6,
@@ -73,6 +73,7 @@ class RegistrationFormType extends AbstractType
                     ]),
                 ],
             ])
+                # a supprimer apres DEV
             ->add('roles', ChoiceType::class, [
                 'choices' => [
                     'User' => 'ROLE_USER',
@@ -80,24 +81,6 @@ class RegistrationFormType extends AbstractType
                 ],
                 'multiple' => true,
                 'expanded' => false, // ou false selon votre besoin (checkbox ou select multiple)
-            ])
-            ->add('phone')
-            ->add('campus', EntityType::class, [
-                'class' => Campus::class,
-                'multiple' => false,
-                'expanded' => false, // Afficher sous forme de cases à cocher
-                'choice_label' => 'name',
-                'attr' => [
-                    'class' => 'container',
-                ]
-            ])
-            ->add('agreeTerms', CheckboxType::class, [
-                'mapped' => false,
-                'constraints' => [
-                    new IsTrue([
-                        'message' => 'You should agree to our terms.',
-                    ]),
-                ],
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'SignUp',
