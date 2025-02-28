@@ -2,11 +2,20 @@
 
 namespace App\Entity;
 
+use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-#[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
-#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+#[UniqueEntity(fields: ['username'], message: 'Ce nom d’utilisateur est déjà utilisé.')]
+#[UniqueEntity(fields: ['email'], message: 'Cet email est déjà utilisé.')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -15,77 +24,46 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 30)]
-    #[Assert\NotNull(message: "The first name field is required.")]
-    #[Assert\NotBlank(message: "The first name field is required.")]
+    #[Assert\NotBlank(message: "Le prénom est requis.")]
     #[Assert\Regex(
         pattern: '/^[A-Za-zÀ-ÿ\s\-]+$/u',
-        message: "The first name can contain only letters and - characters."
-    )]
-    #[Assert\Length(
-        min: 1,
-        max: 30,
-        minMessage: "The firstname cannot be longer than {{ limit }} characters.",
-        maxMessage: "The firstname cannot be longer than {{ limit }} characters."
+        message: "Le prénom ne peut contenir que des lettres et des tirets."
     )]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 30)]
-    #[Assert\NotNull(message: "The name cannot be null.")]
-    #[Assert\NotBlank(message: "The name cannot be empty.")]
+    #[Assert\NotBlank(message: "Le nom est requis.")]
     #[Assert\Regex(
         pattern: '/^[A-Za-zÀ-ÿ\s\-]+$/u',
-        message: "The name can only contain letters and - characters."
-    )]
-    #[Assert\Length(
-        min: 1,
-        max: 30,
-        minMessage: "The name must have at least {{ limit }} characters.",
-        maxMessage: "The name can't have more than {{ limit }} characters."
+        message: "Le nom ne peut contenir que des lettres et des tirets."
     )]
     private ?string $lastName = null;
 
-    #[ORM\Column(length: 15)]
+    #[ORM\Column(length: 15, nullable: true)]
     #[Assert\Regex(
         pattern: '/^(\+?\d{1,3}[-.\s]?)?(\d{2,3}[-.\s]?)?(\d{2,3}[-.\s]?\d{2,3}[-.\s]?\d{2,4})$/',
-        message: "The phone number is not a valid phone number."
+        message: "Le numéro de téléphone est invalide."
     )]
     private ?string $phone = null;
 
     #[ORM\Column(length: 50)]
-    #[Assert\NotNull(message: "L'email ne peut pas être nul.")]
-    #[Assert\NotBlank(message: "L'email ne peut pas être vide.")]
-    #[Assert\Email(
-        message: 'The email {{ value }} is not a valid email.',
-    )]
+    #[Assert\NotBlank(message: "L'email est requis.")]
+    #[Assert\Email(message: 'L\'email {{ value }} n\'est pas valide.')]
     private ?string $email = null;
 
-    /**
-     * @var list<string> The user roles
-     */
     #[ORM\Column]
     private array $roles = [];
 
     #[ORM\Column]
     private ?bool $administrator = null;
 
-    /**
-     * @var string The hashed password
-     */
     #[ORM\Column]
-    #[Assert\PasswordStrength([
-        'message' => 'Your password is too easy to guess.'
-    ])]
+    #[Assert\NotBlank(message: "Le mot de passe est requis.")]
     private ?string $password = null;
 
     #[ORM\Column]
-    private ?bool $active = null;
+    private ?bool $active = false; // Par défaut inactif jusqu'à confirmation
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $confirmationToken = null;
-
-    /**
-     * @var Collection<int, Event>
-     */
     #[ORM\ManyToMany(targetEntity: Event::class, inversedBy: 'users')]
     private Collection $events;
 
@@ -94,15 +72,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?Campus $campus = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\NotBlank(message: "Le nom d'utilisateur est requis.")]
     #[Assert\Regex(
         pattern: '/^[a-zA-Z][a-zA-Z0-9._]{2,19}$/',
-        message: 'The username your provided is not valid.'
+        message: "Le nom d'utilisateur doit contenir entre 3 et 20 caractères, avec uniquement des lettres, chiffres, points et underscores."
     )]
     private ?string $username = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $confirmationToken = null;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $confirmationTokenExpiresAt = null; // Date d'expiration du token
 
     public function __construct()
     {
         $this->events = new ArrayCollection();
+        $this->roles = ['ROLE_USER']; // Assigne par défaut ROLE_USER
     }
 
     public function getId(): ?int
@@ -137,7 +123,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->phone;
     }
 
-    public function setPhone(string $phone): static
+    public function setPhone(?string $phone): static
     {
         $this->phone = $phone;
         return $this;
@@ -156,15 +142,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string) $this->email ?? ''; // Sécurisé pour éviter les erreurs si email = null
     }
 
     public function getRoles(): array
     {
-        $roles = $this->roles;
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
+        return array_unique($this->roles);
     }
 
     public function setRoles(array $roles): static
@@ -217,39 +200,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getEvents(): Collection
+    public function getConfirmationTokenExpiresAt(): ?\DateTimeInterface
     {
-        return $this->events;
+        return $this->confirmationTokenExpiresAt;
     }
 
-    public function addEvent(Event $event): static
+    public function setConfirmationTokenExpiresAt(?\DateTimeInterface $confirmationTokenExpiresAt): static
     {
-        if (!$this->events->contains($event)) {
-            $this->events->add($event);
-        }
-        return $this;
-    }
-
-    public function removeEvent(Event $event): static
-    {
-        $this->events->removeElement($event);
-        return $this;
-    }
-
-    public function getCampus(): ?Campus
-    {
-        return $this->campus;
-    }
-
-    public function setCampus(?Campus $campus): static
-    {
-        $this->campus = $campus;
+        $this->confirmationTokenExpiresAt = $confirmationTokenExpiresAt;
         return $this;
     }
 
     public function eraseCredentials(): void
     {
-        // Clear sensitive data
+        // Supprime les données sensibles si nécessaire
     }
 
     public function getUsername(): ?string
