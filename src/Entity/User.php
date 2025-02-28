@@ -8,8 +8,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -79,6 +79,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     )]
     private ?string $username = null;
 
+    /**
+     * @var Collection<int, Event>
+     */
+    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'Host')]
+    private Collection $eventsHost;
+
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $confirmationToken = null;
 
@@ -89,6 +95,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->events = new ArrayCollection();
         $this->roles = ['ROLE_USER']; // Assigne par défaut ROLE_USER
+        $this->eventsHost = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -104,6 +111,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFirstName(string $firstName): static
     {
         $this->firstName = $firstName;
+
         return $this;
     }
 
@@ -115,6 +123,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastName(string $lastName): static
     {
         $this->lastName = $lastName;
+
         return $this;
     }
 
@@ -126,6 +135,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPhone(?string $phone): static
     {
         $this->phone = $phone;
+
         return $this;
     }
 
@@ -137,22 +147,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): static
     {
         $this->email = $email;
+
         return $this;
     }
 
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
     public function getUserIdentifier(): string
     {
         return (string) $this->email ?? ''; // Sécurisé pour éviter les erreurs si email = null
     }
 
+    /**
+     * @see UserInterface
+     *
+     * @return list<string>
+     */
     public function getRoles(): array
     {
         return array_unique($this->roles);
     }
 
+    /**
+     * @param list<string> $roles
+     */
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
+
         return $this;
     }
 
@@ -164,6 +189,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAdministrator(bool $administrator): static
     {
         $this->administrator = $administrator;
+
         return $this;
     }
 
@@ -175,17 +201,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setActive(bool $active): static
     {
         $this->active = $active;
+
         return $this;
     }
 
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
     public function getPassword(): ?string
     {
         return $this->password;
     }
-
     public function setPassword(string $password): static
     {
         $this->password = $password;
+
         return $this;
     }
 
@@ -211,9 +241,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getCampus(): ?Campus
+    {
+        return $this->campus;
+    }
+
+    public function setCampus(?Campus $campus): static
+    {
+        $this->campus = $campus;
+
+        return $this;
+    }
+
+    /**
+     * @see UserInterface
+     */
     public function eraseCredentials(): void
     {
-        // Supprime les données sensibles si nécessaire
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
     }
 
     public function getUsername(): ?string
@@ -224,6 +270,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUsername(string $username): static
     {
         $this->username = $username;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getEventsHost(): Collection
+    {
+        return $this->eventsHost;
+    }
+
+    public function addEventsHost(Event $eventsHost): static
+    {
+        if (!$this->eventsHost->contains($eventsHost)) {
+            $this->eventsHost->add($eventsHost);
+            $eventsHost->setHost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEventsHost(Event $eventsHost): static
+    {
+        if ($this->eventsHost->removeElement($eventsHost)) {
+            // set the owning side to null (unless already changed)
+            if ($eventsHost->getHost() === $this) {
+                $eventsHost->setHost(null);
+            }
+        }
+
         return $this;
     }
 }

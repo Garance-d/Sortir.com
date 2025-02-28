@@ -25,6 +25,8 @@ class RegistrationFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('firstname', TextType::class, [
+                'label' => 'Firstname',])
             ->add('lastname', TextType::class, [
                 'label' => 'Nom',])
             ->add('firstname', TextType::class, [
@@ -42,7 +44,7 @@ class RegistrationFormType extends AbstractType
                 'class' => Campus::class,
                 'choice_label' => 'name',
                 'label' => 'Campus',
-                'placeholder' => 'Choisissez votre campus',
+                'placeholder' => 'Sélectionnez votre campus',
             ])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
