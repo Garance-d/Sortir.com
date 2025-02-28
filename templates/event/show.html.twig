@@ -10,7 +10,7 @@
         <li class="date-hours-event">Date et heure de la sortie: {{ event.startAt |date('d/m/Y') }}</li>
         <li class="date-limit-inscription">Date limite d'inscription: {{ event.registrationEndsAt |date('d/m/Y') }}</li>
         <li class="nbr-place">Nombre de places: {{ event.maxUsers }}</li>
-        {% for user in users %}
+        {% for user in event.users %}
             <li class="participants">Participants: {{ user.username }}</li>
         {% else %}
             <tr>
@@ -31,5 +31,6 @@
     </ul>
     <div>
         <a href="{{ path('app_event_join', {'id': event.id, 'idUser': app.user.id}) }}" class="button">Join</a>
+        <a href="{{ path('app_event_quit', {'id': event.id, 'idUser': app.user.id}) }}" class="button">Quit</a>
     </div>
 {% endblock %}

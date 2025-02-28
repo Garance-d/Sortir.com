@@ -62,6 +62,7 @@ final class EventController extends AbstractController
             'filterForm' => $form->createView(),
         ]);
     }
+
     #[Route('/create/{id}', name: 'app_event_create', requirements: ['id' => '\d+'])]
     public function createEvent(int $id, Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -114,6 +115,24 @@ final class EventController extends AbstractController
         ]);
     }
 
+    #[Route('/event/{id}/quit/{idUser}', name: 'app_event_quit', requirements: ['idUser' => '\d+', 'id' => '\d+'])]
+    public function quitEvent(int $id, int $idUser, EntityManagerInterface $entityManager): Response
+    {
+        $event = $entityManager->getRepository(Event::class)->find($id);
+        $currentUser = $entityManager->getRepository(User::class)->find($idUser);
+
+        if (!$event || !$currentUser) {
+            throw $this->createNotFoundException("Événement ou utilisateur non trouvé.");
+        }
+
+        $event->removeUser($currentUser);
+        $entityManager->persist($event);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_event_show', [
+            'id' => $id,
+        ]);
+    }
 
     // Modifier un événement
     #[Route('/event/{id}/edit', name: 'app_event_edit')]

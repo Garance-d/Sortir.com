@@ -44,6 +44,11 @@ class Event
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'events')]
     private Collection $users;
 
+    public function getUserCount(): int
+    {
+        return count($this->users);
+    }
+
     #[ORM\ManyToOne(inversedBy: 'events')]
     private ?EventStatus $status = null;
 
