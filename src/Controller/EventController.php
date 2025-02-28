@@ -1,10 +1,12 @@
 <?php
 
+
 namespace App\Controller;
 
 use App\Entity\Event;
 use App\Entity\Filter;
 use App\Entity\Location;
+use App\Entity\User;
 use App\Form\CreateEventFormType;
 use App\Form\FilterType;
 use App\Repository\EventRepository;
@@ -66,16 +68,21 @@ final class EventController extends AbstractController
             'filterForm' => $form->createView(),
         ]);
     }
-    #[Route('/create', name: 'app_event_create')]
-    public function createEvent(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/create/{id}', name: 'app_event_create', requirements: ['id' => '\d+'])]
+    public function createEvent(int $id, Request $request, EntityManagerInterface $entityManager): Response
     {
         $event = new Event();
+        $currentUser = $entityManager->getRepository(User::class)->find($id);
+
+        $event->setHost($currentUser);
+
         $form = $this->createForm(CreateEventFormType::class, $event);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($event);
             $entityManager->flush();
+
             return $this->redirectToRoute('app_event');
         }
         return $this->render('event/create.html.twig', [
@@ -114,6 +121,7 @@ final class EventController extends AbstractController
         return $this->render('event/show.html.twig', [
             'event' => $event,
             'map' => $map,
+            'location' => $event->getLocation(),
         ]);
     }
 

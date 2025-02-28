@@ -1,92 +1,28 @@
 {% extends 'base.html.twig' %}
 
-{% block head %}
-
-
-{#     {% block stylesheets %}#}
-{#         <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"#}
-{#          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="#}
-{#          crossorigin=""#}
-{#         />#}
-{#     {% endblock %}#}
-
-{#         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"#}
-{#                integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="#}
-{#                crossorigin=""></script>#}
-
-
-{#        <script src="{{ asset('app.js') }}"></script>#}
-
-
-{% endblock %}
-
-
 {% block title %}Détail d'un évènement{% endblock %}
-{% block user %}Hello EventController!{% endblock %}
-
-
 
 {% block body %}
 
-<h1>{{ event.name }}</h1>
-<p>{{ event.description }}</p>
-{#<p>Date: {{ event.date|date('d-m-Y') }}</p>#}
-{#<p>Campus: {{ event.campus.name }}</p>#}
 
-
-    <div class="container mt-4">
-        <div class="card">
-            <div class="card-body">
-                <div class="display-event">
-                    <h2 class="card-title">Afficher une sortie</h2>
-
-                    <ul class="list-group list-group-flush" class=".list-group-flush" >
-                        <li class="name-event">Nom de la sortie:  {{ event.name }}</li>
-                        <li class="date-hours-event">Date et heure de la sortie: {{ event.startAt |date('d/m/Y') }}</li>
-                        <li class="date-limit-inscription">Date limite d'inscription: {{ event.registrationEndsAt |date('d/m/Y')}}</li>
-                        <li class="nbr-place">Nombre de places: {{ event.maxUsers }}</li>
-                        <li class="duration">Durée: {{ event.duration }}</li>
-                        <li class="description">Description et info : {{ event.description }}</li>
-{#                        <li class="City">Ville organisatrice : {{ city.name }}</li>#}
-{#                        <li class="place">Lieu : {{ location.name }}</li>#}
-{#                        <li class="street">Rue : {{ location.street }}</li>#}
-{#                        <li class="postal-code">Code postal : {{ city.postalCode }}</li>#}
-{#                        <li class="latitude">Latitude : {{ location.latitude }}</li>#}
-{#                        <li class="longitude">Longitude : {{ location.longitude }}</li>#}
-                    </ul>
-                    <table class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th>Nom</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for event in show %}
-                            <tr>
-                                <td>{{ event.name }}</td>
-                            </tr>
-                        {% else %}
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                    <div>
-                        {{ ux_map(map, { style: 'height: 300px;' }) }}
-                    </div>
-
-                </div>
-
-            </div>
-        </div>
-    </div>
-{#    <div  id="map" style="height: 300px;">#}
-    <div>
-
-
-        <style>
-            .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-            .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-        </style>
-
-    </div>
+                <ul class="list-group list-group-flush">
+                    <li class="name-event">Nom de la sortie:  {{ event.name }}</li>
+                    <li class="date-hours-event">Date et heure de la sortie: {{ event.startAt |date('d/m/Y')}}</li>
+                    <li class="date-limit-inscription">Date limite d'inscription: {{ event.registrationEndsAt |date('d/m/Y')}}</li>
+                    <li class="nbr-place">Nombre de places: {{ event.maxUsers }}</li>
+                    <li class="duration">Durée: {{ event.duration }}</li>
+                    <li class="description">Description et info : {{ event.description }}</li>
+                    {% if event.host.username is defined and event.host.username is not empty %}
+                        <li class="host">Organisateur : {{ event.host.username }}</li>
+                    {% endif %}
+                    <li class="City">Ville organisatrice : {{ location.name }}</li>
+                    <li class="place">Lieu : {{ location.name }}</li>
+                    <li class="street">Rue : {{ location.street }}</li>
+                    <li class="latitude">Latitude : {{ location.latitude }}</li>
+                    <li class="longitude">Longitude : {{ location.longitude }}</li>
+                </ul>
+                 <div>
+                    {{ ux_map(map, { style: 'height: 300px;' }) }}
+                 </div>
 
 {% endblock %}

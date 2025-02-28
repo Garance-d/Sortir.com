@@ -11,7 +11,7 @@
             <a class="nav-item nav-link" href="{{ path('app_home') }}">Home</a>
             <a class="nav-item nav-link active" href="{{ path('app_event') }}">Events</a>
             {% if app.user is not null %}
-                <a class="nav-item nav-link active" href="{{ path('app_event_create') }}">Create Event</a>
+                <a class="nav-item nav-link active" href="{{ path('app_event_create', {'id': app.user.id }) }}">Create Event</a>
                 <a class="nav-item nav-link" href="{{ path('app_update', {'id': app.user.id }) }}">Profile</a>
                 <a class="nav-item nav-link " href="{{ path('app_logout') }}">Log Out</a>
             {%  else %}

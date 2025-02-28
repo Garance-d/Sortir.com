@@ -34,8 +34,9 @@ class Event
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\ManyToOne(inversedBy: 'events')]
+    #[ORM\ManyToOne(inversedBy: 'events', cascade: ["persist"])]
     private ?Location $location = null;
+
 
     /**
      * @var Collection<int, User>
@@ -45,6 +46,9 @@ class Event
 
     #[ORM\ManyToOne(inversedBy: 'events')]
     private ?EventStatus $status = null;
+
+    #[ORM\ManyToOne(inversedBy: 'eventsHost')]
+    private ?User $Host = null;
 
     public function __construct()
     {
@@ -175,6 +179,18 @@ class Event
     public function setStatus(?EventStatus $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getHost(): ?User
+    {
+        return $this->Host;
+    }
+
+    public function setHost(?User $Host): static
+    {
+        $this->Host = $Host;
 
         return $this;
     }
