@@ -1,5 +1,26 @@
 {% extends 'base.html.twig' %}
 
+{% block head %}
+
+
+{#     {% block stylesheets %}#}
+{#         <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"#}
+{#          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="#}
+{#          crossorigin=""#}
+{#         />#}
+{#     {% endblock %}#}
+
+{#         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"#}
+{#                integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="#}
+{#                crossorigin=""></script>#}
+
+
+{#        <script src="{{ asset('app.js') }}"></script>#}
+
+
+{% endblock %}
+
+
 {% block title %}Détail d'un évènement{% endblock %}
 {% block user %}Hello EventController!{% endblock %}
 
@@ -26,35 +47,42 @@
                         <li class="nbr-place">Nombre de places: {{ event.maxUsers }}</li>
                         <li class="duration">Durée: {{ event.duration }}</li>
                         <li class="description">Description et info : {{ event.description }}</li>
-    {#                    <li class="City">Ville organisatrice : {{ location.name }}</li>#}
-    {#                    <li class="place">Lieu : {{ location.name }}</li>#}
-    {#                    <li class="street">Rue : {{ location.street }}</li>#}
-    {#                    <li class="postal-code">Code postal : {{ city.postalCode }}</li>#}
-    {#                    <li class="latitude">Latitude : {{ location.latitude }}</li>#}
-    {#                    <li class="longitude">Longitude : {{ location.longitude }}</li>#}
+{#                        <li class="City">Ville organisatrice : {{ city.name }}</li>#}
+{#                        <li class="place">Lieu : {{ location.name }}</li>#}
+{#                        <li class="street">Rue : {{ location.street }}</li>#}
+{#                        <li class="postal-code">Code postal : {{ city.postalCode }}</li>#}
+{#                        <li class="latitude">Latitude : {{ location.latitude }}</li>#}
+{#                        <li class="longitude">Longitude : {{ location.longitude }}</li>#}
                     </ul>
+                    <div class = "map" >
+                        {{ ux_map(map, { style: 'height: 400px ' }) }}
+                    </div>
 
                 </div>
+
             </div>
         </div>
     </div>
+{#    <div  id="map" style="height: 300px;">#}
+    <div>
 
-    {% block stylesheets%}
-    <div class="container mt-4" id="map">
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-              integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-              crossorigin=""/>
 
-        {% block javascripts %}
-        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-                integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-                crossorigin=""></script>
+        <style>
+            .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+            .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+        </style>
 
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map);
 
-        <script src="{{ asset('app.js') }}"></script>
+        <div class="example-wrapper">
+            <h1>Hello ! ✅</h1>
+
+            This friendly message is coming from:
+            <ul>
+                <li>Your controller at <code>C:/Users/Garance/PhpstormProjects/Sortir.com/src/Controller/EventController.php</code></li>
+                <li>Your template at <code>C:/Users/Garance/PhpstormProjects/Sortir.com/templates/map/show.html.twig</code></li>
+            </ul>
+        </div>
+
     </div>
+
 {% endblock %}

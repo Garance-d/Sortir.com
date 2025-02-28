@@ -4,14 +4,20 @@ namespace App\Controller;
 
 use App\Entity\Event;
 use App\Entity\Filter;
+use App\Entity\Location;
 use App\Form\CreateEventFormType;
 use App\Form\FilterType;
+use App\Repository\EventRepository;
+use App\Repository\LocationRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use EventType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\UX\Map\InfoWindow;
+use Symfony\UX\Map\Map;
+use Symfony\UX\Map\Marker;
+use Symfony\UX\Map\Point;
 
 final class EventController extends AbstractController
 {
@@ -78,10 +84,36 @@ final class EventController extends AbstractController
     }
     // Afficher le détail de l'événement
     #[Route('/event/{id}', name: 'app_event_show')]
-    public function show(Event $event): Response
+    public function show(Event $event, LocationRepository $locationRepository): Response
     {
+        $location = $locationRepository->findAll();
+        $map = (new Map())
+
+            ->fitBoundsToMarkers();
+
+
+        // With an info window associated to the marker:
+
+        foreach ($location as $location) {
+        $map->addMarker(new Marker(
+            position: new Point($location->getLatitude(), $location->getLongitude()),
+            title: $location->getName(),
+            extra: [
+                'icon_mask_url' => 'https://maps.gstatic.com/mapfiles/place_api/icons/v2/tree_pinlet.svg',
+            ],
+            infoWindow: new InfoWindow(
+                headerContent: $event->getName(),
+                content: $location->getStreet(),
+                extra: [
+                    'num_items' => 3,
+                    'includes_link' => true,
+                ],
+            ),
+        ));
+        }
         return $this->render('event/show.html.twig', [
             'event' => $event,
+            'map' => $map,
         ]);
     }
 
