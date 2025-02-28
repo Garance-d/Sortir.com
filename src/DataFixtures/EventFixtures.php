@@ -24,7 +24,6 @@ class EventFixtures extends Fixture
     {
         $faker = \Faker\Factory::create('fr_FR');
 
-        // Création de quelques statuts
         $statuses = [];
         $statusLabels = ['En attente', 'Confirmé', 'Annulé'];
 
@@ -35,7 +34,6 @@ class EventFixtures extends Fixture
             $statuses[] = $status;
         }
 
-        // Créer et persister les campuses
         $campuses = [];
         for ($i = 1; $i <= 5; $i++) {
             $campus = new Campus();
@@ -44,7 +42,6 @@ class EventFixtures extends Fixture
             $campuses[] = $campus;
         }
 
-        // Créer et persister les villes (City)
         $cities = [];
         for ($i = 0; $i < 10; $i++) {
             $city = new City();
@@ -54,7 +51,6 @@ class EventFixtures extends Fixture
             $cities[] = $city;
         }
 
-        // Créer et persister les lieux (Location)
         $locations = [];
         for ($i = 0; $i < 5; $i++) {
             $location = new Location();
@@ -66,10 +62,8 @@ class EventFixtures extends Fixture
             $locations[] = $location;
         }
 
-        // Flush pour s'assurer que les entités comme Campus, City et Location sont bien persistées
         $manager->flush();
 
-        // Créer et persister les événements
         $events = [];
         for ($i = 0; $i < 20; $i++) {
             $event = new Event();
@@ -85,14 +79,11 @@ class EventFixtures extends Fixture
 
             $manager->persist($event);
 
-            // Ajouter une référence à cet événement pour les utilisateurs
             $this->addReference('event_'.$i, $event);
         }
 
-        // Flush pour persister tous les événements
         $manager->flush();
 
-        // Créer et persister les utilisateurs
         $users = [];
         for ($i = 1; $i <= 5; $i++) {
             $user = new User();
@@ -109,6 +100,11 @@ class EventFixtures extends Fixture
             $user->setActive(true);
             $campus = $faker->randomElement($campuses); // Prend un campus déjà créé
             $user->setCampus($campus);
+
+            // Associer l'utilisateur à un événement aléatoire
+            $eventReference = $this->getReference('event_' . $faker->numberBetween(0, 19), Event::class); // Prendre un événement existant
+            // Ajouter l'utilisateur à l'événement
+            $eventReference->addUser($user); // Exemple d'ajout d'un utilisateur à un événement
 
             $manager->persist($user);
             $users[] = $user;
