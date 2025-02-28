@@ -102,8 +102,8 @@ class EventFixtures extends Fixture
             $user->setPhone($faker->phoneNumber());
             $user->setEmail($faker->email());
             $user->setUsername($faker->userName());
-          
-            $plainPassword = 'password123';
+
+            $plainPassword = 'password123'; // Utilise une valeur fixe ou random
 
             $hashedPassword = $this->passwordHasher->hashPassword($user, $plainPassword);
             $user->setPassword($hashedPassword);

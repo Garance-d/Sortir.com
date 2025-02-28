@@ -21,4 +21,8 @@
                     <li class="latitude">Latitude : {{ location.latitude }}</li>
                     <li class="longitude">Longitude : {{ location.longitude }}</li>
                 </ul>
+                 <div>
+                    {{ ux_map(map, { style: 'height: 300px;' }) }}
+                 </div>
+
 {% endblock %}
