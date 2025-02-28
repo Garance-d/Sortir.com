@@ -102,7 +102,9 @@ class EventFixtures extends Fixture
             $user->setPhone($faker->phoneNumber());
             $user->setEmail($faker->email());
             $user->setUsername($faker->userName());
-            $plainPassword = 'password123'; // Utilise une valeur fixe ou random
+          
+            $plainPassword = 'password123';
+
             $hashedPassword = $this->passwordHasher->hashPassword($user, $plainPassword);
             $user->setPassword($hashedPassword);
             $user->setRoles(['ROLE_USER']);
@@ -114,7 +116,6 @@ class EventFixtures extends Fixture
             $manager->persist($user);
             $users[] = $user;
         }
-
         $manager->flush();
     }
 }

@@ -105,9 +105,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     private ?string $username = null;
 
+    /**
+     * @var Collection<int, Event>
+     */
+    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'Host')]
+    private Collection $eventsHost;
+
     public function __construct()
     {
         $this->events = new ArrayCollection();
+        $this->eventsHost = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -288,6 +295,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUsername(string $username): static
     {
         $this->username = $username;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getEventsHost(): Collection
+    {
+        return $this->eventsHost;
+    }
+
+    public function addEventsHost(Event $eventsHost): static
+    {
+        if (!$this->eventsHost->contains($eventsHost)) {
+            $this->eventsHost->add($eventsHost);
+            $eventsHost->setHost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEventsHost(Event $eventsHost): static
+    {
+        if ($this->eventsHost->removeElement($eventsHost)) {
+            // set the owning side to null (unless already changed)
+            if ($eventsHost->getHost() === $this) {
+                $eventsHost->setHost(null);
+            }
+        }
 
         return $this;
     }
