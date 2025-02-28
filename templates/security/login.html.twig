@@ -1,44 +1,48 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Connexion{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+{% endblock %}
 
 {% block body %}
-
-    <div class="form-container">
-        <div class="form-card">
+    <div class="container">
+        {% if app.user %}
+            <div class="mb-3">
+                <h1>Vous êtes connecté</h1>
+                <p>Bienvenue, {{ app.user.firstName }} {{ app.user.lastName }} !</p>
+                <a href="{{ path('app_logout') }}" class="btn btn-lg btn-primary">Se déconnecter</a>
+            </div>
+        {% else %}
+            <div class="alert">
+                🔒 Vous devez être connecté pour consulter la liste des sorties prévues.
+            </div>
 
             <form method="post">
-
                 {% if error %}
                     <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                 {% endif %}
 
-                {% if app.user %}
-                    <div>
-                        You are logged in as {{ app.user.userIdentifier }}, <a
-                                href="{{ path('app_logout') }}">Logout</a>
-                    </div>
-                {% endif %}
-
-                <h1>Please sign in</h1>
+                <h1>Connectez-vous</h1>
                 <label for="inputEmail">Email</label>
-                <input type="email" value="{{ last_username }}" name="email" id="inputEmail" autocomplete="email"
-                       required autofocus>
-                <label for="inputPassword">Password</label>
-                <input type="password" name="password" id="inputPassword" autocomplete="current-password" required>
+                <input type="email" value="{{ last_username }}" name="email" id="inputEmail" required autofocus>
+                <label for="inputPassword">Mot de passe</label>
+                <input type="password" name="password" id="inputPassword" required>
 
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
                 <div class="checkbox">
-                    <label>
-                        <input type="checkbox" name="_remember_me"> Remember me
-                    </label>
+                    <input type="checkbox" name="_remember_me"> Souvenir de moi
                 </div>
 
-                <button class="button" type="submit">
-                    Sign in
-                </button>
+                <button type="submit">Connexion</button>
+
+                <p>
+                    Pas encore de compte ?
+                    <a href="{{ path('app_register') }}">Inscrivez-vous</a>
+                </p>
             </form>
-        </div>
+        {% endif %}
     </div>
 {% endblock %}

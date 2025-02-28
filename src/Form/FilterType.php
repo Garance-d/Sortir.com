@@ -8,12 +8,13 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use App\Entity\Event;
 
-class FilterType extends AbstractType
+class EventType extends AbstractType
 {
-
-    public function buildForm(\Symfony\Component\Form\FormBuilderInterface $builder, array $options) : void
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('campus', EntityType::class, [
@@ -29,19 +30,26 @@ class FilterType extends AbstractType
                 'label' => 'Le nom de la sortie contient',
                 'required' => false, // Ce champ peut être facultatif
             ])
-
-            ->add('date',   DateType::class, [])
+            ->add('date', DateType::class, [])
             ->add('eventCheckb', CheckboxType::class, [
                 'label' => 'Événements auxquels je suis inscrit/e',
                 'required' => false,
             ]);
-    }
-    public function configureOptions(OptionsResolver $resolver) : void {
 
-        $resolver->setDefaults([
-            'data_class' => \App\Entity\Filter::class,
-            'method' => 'GET',
-            // 'csrf_protection' => false
-        ]);
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+
+        public
+        function configureOptions(OptionsResolver $resolver): void
+        {
+            $resolver->setDefaults([
+                'data_class' => \App\Entity\Filter::class,
+                'method' => 'GET',
+                // 'csrf_protection' => false
+            ]);
+        }
+
     }
 }

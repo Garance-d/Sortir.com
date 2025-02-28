@@ -15,9 +15,15 @@
     </head>
     <body>
     {% include 'partials/header.html.twig' %}
+    {% for message in app.flashes %}
+        {% for message in message %}
+            <p> {{ message | raw }}</p>
+            
+        {% endfor %}
+        
+    {% endfor %}
+    {% block body %}{% endblock %}
 
-    <div class="container">
-            {% block body %}{% endblock %}
-    </div>
+    {% include 'partials/footer.html.twig' %}
     </body>
 </html>
