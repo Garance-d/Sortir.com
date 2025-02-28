@@ -12,8 +12,8 @@
                     <li class="nbr-place">Nombre de places: {{ event.maxUsers }}</li>
                     <li class="duration">Durée: {{ event.duration }}</li>
                     <li class="description">Description et info : {{ event.description }}</li>
-                    {% if host is defined and host.name is not empty %}
-                        <li class="host">Organisateur : {{ event.host.firstName }}</li>
+                    {% if event.host is defined and event.host.username is not empty %}
+                        <li class="host">Organisateur : {{ event.host.username }}</li>
                     {% endif %}
                     <li class="City">Ville organisatrice : {{ location.name }}</li>
                     <li class="place">Lieu : {{ location.name }}</li>
