@@ -43,18 +43,37 @@ class RegistrationController extends AbstractController
     #[Route('/update/{id}', name: 'app_update', requirements: ['id' => '\d+'])]
     public function update(int $id, Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
+        // Trouver l'utilisateur par ID
         $user = $entityManager->getRepository(User::class)->find($id);
+
+        if (!$user) {
+            // Si l'utilisateur n'existe pas, rediriger ou afficher un message d'erreur
+            return $this->redirectToRoute('app_register');  // Redirection vers la page d'inscription par exemple
+        }
+
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
+            // Vérifier si un nouveau mot de passe a été renseigné
+            /** @var string $plainPassword */
+            $plainPassword = $form->get('plainPassword')->getData();
+
+            if (!empty($plainPassword)) {
+                // Si un mot de passe a été fourni, on le hache et on le met à jour
+                $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
+            }
+
+            // Enregistrer les autres informations sans toucher au mot de passe si celui-ci n'a pas été modifié
             $entityManager->persist($user);
             $entityManager->flush();
+
+            // Rediriger vers la page de connexion ou autre page après mise à jour
             return $this->redirectToRoute('app_login');
         }
+
         return $this->render('registration/update.html.twig', [
-            'registrationForm' => $form,
+            'registrationForm' => $form->createView(),
         ]);
     }
-
-
 }
