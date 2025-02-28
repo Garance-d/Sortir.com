@@ -85,13 +85,35 @@ final class EventController extends AbstractController
     }
     // Afficher le détail de l'événement
     #[Route('/event/{id}', name: 'app_event_show')]
-    public function show(Event $event): Response
+    public function show(Event $event, EntityManagerInterface $entityManager): Response
     {
+        $users = $entityManager->getRepository(User::class)->findAll();
         return $this->render('event/show.html.twig', [
             'event' => $event,
             'location' => $event->getLocation(),
+            'users' => $users,
         ]);
     }
+
+    #[Route('/event/{id}/join/{idUser}', name: 'app_event_join', requirements: ['idUser' => '\d+', 'id' => '\d+'])]
+    public function joinEvent(int $id, int $idUser, EntityManagerInterface $entityManager): Response
+    {
+        $event = $entityManager->getRepository(Event::class)->find($id);
+        $currentUser = $entityManager->getRepository(User::class)->find($idUser);
+
+        if (!$event || !$currentUser) {
+            throw $this->createNotFoundException("Événement ou utilisateur non trouvé.");
+        }
+
+        $event->addUser($currentUser);
+        $entityManager->persist($event);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_event_show', [
+            'id' => $id,
+        ]);
+    }
+
 
     // Modifier un événement
     #[Route('/event/{id}/edit', name: 'app_event_edit')]
@@ -123,5 +145,7 @@ final class EventController extends AbstractController
 
         return $this->redirectToRoute('app_event');
     }
+
+
 }
 
