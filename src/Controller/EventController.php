@@ -5,17 +5,23 @@ namespace App\Controller;
 
 use App\Entity\Event;
 use App\Entity\Filter;
+use App\Entity\Location;
 use App\Entity\User;
 use App\Form\CreateEventFormType;
 use App\Form\FilterType;
 use App\Repository\EventRepository;
 use App\Repository\FilterRepository;
+use App\Repository\LocationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use EventType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\UX\Map\InfoWindow;
+use Symfony\UX\Map\Map;
+use Symfony\UX\Map\Marker;
+use Symfony\UX\Map\Point;
 
 final class EventController extends AbstractController
 {
@@ -94,7 +100,6 @@ final class EventController extends AbstractController
             'filterForm' => $form->createView(),
         ]);
     }
-
     #[Route('/create/{id}', name: 'app_event_create', requirements: ['id' => '\d+'])]
     public function createEvent(int $id, Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -118,11 +123,37 @@ final class EventController extends AbstractController
     }
 
     #[Route('/event/{id}', name: 'app_event_show')]
-    public function show(Event $event, EntityManagerInterface $entityManager): Response
+    public function show(Event $event, EntityManagerInterface $entityManager, LocationRepository $locationRepository): Response
     {
         $users = $entityManager->getRepository(User::class)->findAll();
+        $location = $locationRepository->findAll();
+        $map = (new Map())
+
+            ->fitBoundsToMarkers();
+
+
+        // With an info window associated to the marker:
+
+        foreach ($location as $location) {
+        $map->addMarker(new Marker(
+            position: new Point($location->getLatitude(), $location->getLongitude()),
+            title: $location->getName(),
+            infoWindow: new InfoWindow(
+                headerContent: $event->getName(),
+                content: $location->getStreet(),
+                extra: [
+                    'num_items' => 3,
+                    'includes_link' => true,
+                ],
+            ),
+            extra: [
+                'icon_mask_url' => 'https://maps.gstatic.com/mapfiles/place_api/icons/v2/tree_pinlet.svg',
+            ],
+        ));
+        }
         return $this->render('event/show.html.twig', [
             'event' => $event,
+            'map' => $map,
             'location' => $event->getLocation(),
             'users' => $users,
         ]);
@@ -209,7 +240,5 @@ final class EventController extends AbstractController
 
         return $this->redirectToRoute('app_event');
     }
-
-
 }
 

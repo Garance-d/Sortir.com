@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Campus;
 use App\Entity\User;
+use Doctrine\ORM\EntityManager;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use App\Entity\Event;
@@ -92,7 +93,9 @@ class EventFixtures extends Fixture
             $user->setPhone($faker->phoneNumber());
             $user->setEmail($faker->email());
             $user->setUsername($faker->userName());
-            $plainPassword = 'password123';
+
+            $plainPassword = 'password123'; // Utilise une valeur fixe ou random
+
             $hashedPassword = $this->passwordHasher->hashPassword($user, $plainPassword);
             $user->setPassword($hashedPassword);
             $user->setRoles(['ROLE_USER']);
@@ -109,8 +112,6 @@ class EventFixtures extends Fixture
             $manager->persist($user);
             $users[] = $user;
         }
-
-        // Flush final pour persister tous les utilisateurs
         $manager->flush();
     }
 }
