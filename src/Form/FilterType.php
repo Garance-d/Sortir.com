@@ -8,6 +8,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FilterType extends AbstractType
@@ -20,26 +21,28 @@ class FilterType extends AbstractType
                 'class' => Campus::class,
                 'choice_label' => 'name',
                 'label' => 'Campus',
-                'placeholder' => 'Sélectionnez votre campus',
+                'placeholder' => 'Sélectionnez le campus',
+                'required' => false,
             ])
-            ->add('event', EntityType::class, [
-                'class' => \App\Entity\Event::class, // Assurez-vous de spécifier la bonne entité
-                'choice_label' => 'name', // Le champ qui sera affiché dans le formulaire
-                'attr' => ['placeholder' => 'search'],
+            ->add('eventName', TextType::class, [ // Correction ici
                 'label' => 'Le nom de la sortie contient',
-                'required' => false, // Ce champ peut être facultatif
+                'required' => false,
+                'attr' => ['placeholder' => 'Rechercher un événement'],
             ])
-
-            ->add('date',   DateType::class, [])
+            ->add('date', DateType::class, [
+                'label' => 'Date de l\'événement',
+                'widget' => 'single_text', // Permet un affichage propre en input HTML5
+                'required' => false,
+            ])
             ->add('eventCheckb', CheckboxType::class, [
-                'label' => 'Événements auxquels je suis inscrit/e',
+                'label' => 'Événements auxquels je suis inscrit(e)',
                 'required' => false,
             ]);
     }
     public function configureOptions(OptionsResolver $resolver) : void {
 
         $resolver->setDefaults([
-            'data_class' => \App\Entity\Filter::class,
+            'data_class' => null,
             'method' => 'GET',
             // 'csrf_protection' => false
         ]);

@@ -53,7 +53,7 @@ class Event
     private ?EventStatus $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'eventsHost')]
-    private ?User $Host = null;
+    private ?User $host = null;
 
     public function __construct()
     {
@@ -190,12 +190,12 @@ class Event
 
     public function getHost(): ?User
     {
-        return $this->Host;
+        return $this->host;
     }
 
-    public function setHost(?User $Host): static
+    public function setHost(?User $host): static
     {
-        $this->Host = $Host;
+        $this->host = $host;
 
         return $this;
     }

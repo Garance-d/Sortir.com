@@ -18,6 +18,13 @@
             </tr>
         {% endfor %}
         <li class="duration">Durée: {{ event.duration }}</li>
+        <li class="customers">
+        {% if event.getUserCount() == event.maxUsers %}
+            <p>Complet</p>
+        {% else %}
+            Nombre de participants {{ event.getUserCount() }}/{{ event.maxUsers }}
+        {% endif %}
+        </li>
         <li class="description">Description et info : {{ event.description }}</li>
         {% if event.host.username is defined and event.host.username is not empty %}
             <li class="host">Organisateur : {{ event.host.username }}</li>
