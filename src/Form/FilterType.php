@@ -41,6 +41,10 @@ class FilterType extends AbstractType
             ->add('eventCheckbHost', CheckboxType::class, [
                 'label' => 'Événements pour lesquels je suis l\'organisateur.rice',
                 'required' => false,
+            ])
+            ->add('eventCheckbArchive', CheckboxType::class, [
+                'label' => 'Événements archivés',
+                'required' => false,
             ]);
     }
     public function configureOptions(OptionsResolver $resolver) : void {

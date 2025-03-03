@@ -26,54 +26,67 @@ final class EventController extends AbstractController
         $form = $this->createForm(FilterType::class);
         $form->handleRequest($request);
 
-        // Récupération des valeurs du formulaire
         $filters = $form->getData();
 
-        // Construction de la requête en fonction des filtres
         $queryBuilder = $eventRepository->createQueryBuilder('e')
             ->leftJoin('e.host', 'o')
             ->leftJoin('o.campus', 'c');
 
+        $oneMonthAgo = new \DateTime();
+        $oneMonthAgo->modify('-1 month');
+
         if ($form->isSubmitted() && $form->isValid()) {
 
-            if ($filters['campus']) {
-                $queryBuilder->andWhere('c = :campus')
-                    ->setParameter('campus', $filters['campus']);
-            }
+            if ($filters['eventCheckbArchive']) {
+                // Montrer UNIQUEMENT les événements archivés (plus vieux qu'un mois)
+                $queryBuilder->andWhere('e.startAt < :oneMonthAgo')
+                    ->setParameter('oneMonthAgo', $oneMonthAgo);
+            } else {
+                // Comportement par défaut: exclure les événements archivés
+                $queryBuilder->andWhere('e.startAt > :oneMonthAgo')
+                    ->setParameter('oneMonthAgo', $oneMonthAgo);
 
-            if (!empty($filters['eventName'])) {
-                $queryBuilder->andWhere('e.name LIKE :eventName')
-                    ->setParameter('eventName', '%'.$filters['eventName'].'%');
-            }
+                if ($filters['campus']) {
+                    $queryBuilder->andWhere('c = :campus')
+                        ->setParameter('campus', $filters['campus']);
+                }
 
-            if ($filters['date']) {
-                $startOfDay = clone $filters['date'];
-                $startOfDay->setTime(0, 0, 0);
+                if (!empty($filters['eventName'])) {
+                    $queryBuilder->andWhere('e.name LIKE :eventName')
+                        ->setParameter('eventName', '%'.$filters['eventName'].'%');
+                }
 
-                $endOfDay = clone $filters['date'];
-                $endOfDay->setTime(23, 59, 59);
+                if ($filters['date']) {
+                    $startOfDay = clone $filters['date'];
+                    $startOfDay->setTime(0, 0, 0);
 
-                $queryBuilder->andWhere('e.startAt BETWEEN :start_date AND :end_date')
-                    ->setParameter('start_date', $startOfDay)
-                    ->setParameter('end_date', $endOfDay);
-            }
+                    $endOfDay = clone $filters['date'];
+                    $endOfDay->setTime(23, 59, 59);
 
-            if ($filters['eventCheckbUser']) {
-                $queryBuilder->andWhere(':user MEMBER OF e.users')
-                    ->setParameter('user', $this->getUser());
-            }
-            
-            if ($filters['eventCheckbHost']) {
-                $queryBuilder->andWhere('e.host = :host')
-                    ->setParameter('host', $this->getUser());
+                    $queryBuilder->andWhere('e.startAt BETWEEN :start_date AND :end_date')
+                        ->setParameter('start_date', $startOfDay)
+                        ->setParameter('end_date', $endOfDay);
+                }
+
+                if ($filters['eventCheckbUser']) {
+                    $queryBuilder->andWhere(':user MEMBER OF e.users')
+                        ->setParameter('user', $this->getUser());
+                }
+
+                if ($filters['eventCheckbHost']) {
+                    $queryBuilder->andWhere('e.host = :host')
+                        ->setParameter('host', $this->getUser());
+                }
             }
 
             $events = $queryBuilder->getQuery()->getResult();
 
         } else {
+            // Sans filtre, n'afficher que les événements non archivés
+            $queryBuilder->andWhere('e.startAt > :oneMonthAgo')
+                ->setParameter('oneMonthAgo', $oneMonthAgo);
 
-            $events = $entityManager->getRepository(Event::class)->findAll();
-
+            $events = $queryBuilder->getQuery()->getResult();
         }
 
         return $this->render('event/index.html.twig', [
@@ -116,7 +129,7 @@ final class EventController extends AbstractController
     }
 
     #[Route('/event/{id}/join/{idUser}', name: 'app_event_join', requirements: ['idUser' => '\d+', 'id' => '\d+'])]
-    public function joinEvent(int $id, int $idUser, EntityManagerInterface $entityManager): Response
+    public function joinEvent(int $id, int $idUser, EntityManagerInterface $entityManager, EventRepository $eventRepository): Response
     {
         $event = $entityManager->getRepository(Event::class)->find($id);
         $currentUser = $entityManager->getRepository(User::class)->find($idUser);
@@ -125,9 +138,16 @@ final class EventController extends AbstractController
             throw $this->createNotFoundException("Événement ou utilisateur non trouvé.");
         }
 
-        $event->addUser($currentUser);
-        $entityManager->persist($event);
-        $entityManager->flush();
+        $today = new \DateTime();
+
+        if ($event->getRegistrationEndsAt() >= $today) {
+            $event->addUser($currentUser);
+            $entityManager->persist($event);
+            $entityManager->flush();
+            $this->addFlash('success', 'Vous avez été inscrit à l\'événement avec succès !');
+        } else {
+            $this->addFlash('error', 'La date limite d\'inscription est dépassée. Vous ne pouvez plus vous inscrire à cet événement.');
+        }
 
         return $this->redirectToRoute('app_event_show', [
             'id' => $id,
@@ -144,9 +164,17 @@ final class EventController extends AbstractController
             throw $this->createNotFoundException("Événement ou utilisateur non trouvé.");
         }
 
-        $event->removeUser($currentUser);
-        $entityManager->persist($event);
-        $entityManager->flush();
+        $today = new \DateTime();
+
+        if ($event->getStartAt() >= $today) {
+            $event->removeUser($currentUser);
+            $entityManager->persist($event);
+            $entityManager->flush();
+            $this->addFlash('success', 'Vous avez été inscrit à l\'événement avec succès !');
+        } else {
+            $this->addFlash('error', 'La date limite d\'inscription est dépassée. Vous ne pouvez plus vous inscrire à cet événement.');
+        }
+
 
         return $this->redirectToRoute('app_event_show', [
             'id' => $id,
