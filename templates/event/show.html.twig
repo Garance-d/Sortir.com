@@ -5,24 +5,42 @@
 {% block body %}
 
 
-                <ul class="list-group list-group-flush">
-                    <li class="name-event">Nom de la sortie:  {{ event.name }}</li>
-                    <li class="date-hours-event">Date et heure de la sortie: {{ event.startAt |date('d/m/Y')}}</li>
-                    <li class="date-limit-inscription">Date limite d'inscription: {{ event.registrationEndsAt |date('d/m/Y')}}</li>
-                    <li class="nbr-place">Nombre de places: {{ event.maxUsers }}</li>
-                    <li class="duration">Durée: {{ event.duration }}</li>
-                    <li class="description">Description et info : {{ event.description }}</li>
-                    {% if event.host.username is defined and event.host.username is not empty %}
-                        <li class="host">Organisateur : {{ event.host.username }}</li>
-                    {% endif %}
-                    <li class="City">Ville organisatrice : {{ location.name }}</li>
-                    <li class="place">Lieu : {{ location.name }}</li>
-                    <li class="street">Rue : {{ location.street }}</li>
-                    <li class="latitude">Latitude : {{ location.latitude }}</li>
-                    <li class="longitude">Longitude : {{ location.longitude }}</li>
-                </ul>
-                 <div>
-                    {{ ux_map(map, { style: 'height: 300px;' }) }}
-                 </div>
+    <ul class="list-group list-group-flush">
+        <li class="name-event">Nom de la sortie: {{ event.name }}</li>
+        <li class="date-hours-event">Date et heure de la sortie: {{ event.startAt |date('d/m/Y') }}</li>
+        <li class="date-limit-inscription">Date limite d'inscription: {{ event.registrationEndsAt |date('d/m/Y') }}</li>
+        <li class="nbr-place">Nombre de places: {{ event.maxUsers }}</li>
+        {% for user in event.users %}
+            <li class="participants">Participants: {{ user.username }}</li>
+        {% else %}
+            <tr>
+                <td colspan="8" class="text-center">Aucun participant.</td>
+            </tr>
+        {% endfor %}
+        <li class="duration">Durée: {{ event.duration }}</li>
+        <li class="customers">
+        {% if event.getUserCount() == event.maxUsers %}
+            <p>Complet</p>
+        {% else %}
+            Nombre de participants {{ event.getUserCount() }}/{{ event.maxUsers }}
+        {% endif %}
+        </li>
+        <li class="description">Description et info : {{ event.description }}</li>
+        {% if event.host.username is defined and event.host.username is not empty %}
+            <li class="host">Organisateur : {{ event.host.username }}</li>
+        {% endif %}
+        <li class="City">Ville organisatrice : {{ location.name }}</li>
+        <li class="place">Lieu : {{ location.name }}</li>
+        <li class="street">Rue : {{ location.street }}</li>
+        <li class="latitude">Latitude : {{ location.latitude }}</li>
+        <li class="longitude">Longitude : {{ location.longitude }}</li>
 
+    </ul>
+    <div>
+        {{ ux_map(map, { style: 'height: 300px;' }) }}
+    </div>
+    <div>
+        <a href="{{ path('app_event_join', {'id': event.id, 'idUser': app.user.id}) }}" class="button">Join</a>
+        <a href="{{ path('app_event_quit', {'id': event.id, 'idUser': app.user.id}) }}" class="button">Quit</a>
+    </div>
 {% endblock %}

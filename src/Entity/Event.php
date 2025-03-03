@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
 class Event
@@ -20,12 +21,17 @@ class Event
     private ?string $name = null;
 
     #[ORM\Column]
+    #[Assert\NotNull]
     private ?\DateTimeImmutable $startAt = null;
 
     #[ORM\Column]
+    #[Assert\NotNull]
+    #[Assert\Positive]
     private ?int $duration = null;
 
     #[ORM\Column]
+    #[Assert\NotNull]
+    #[Assert\LessThan(propertyPath: "startAt")]
     private ?\DateTimeImmutable $registrationEndsAt = null;
 
     #[ORM\Column]
@@ -44,11 +50,16 @@ class Event
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'events')]
     private Collection $users;
 
+    public function getUserCount(): int
+    {
+        return count($this->users);
+    }
+
     #[ORM\ManyToOne(inversedBy: 'events')]
     private ?EventStatus $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'eventsHost')]
-    private ?User $Host = null;
+    private ?User $host = null;
 
     public function __construct()
     {
@@ -185,12 +196,12 @@ class Event
 
     public function getHost(): ?User
     {
-        return $this->Host;
+        return $this->host;
     }
 
-    public function setHost(?User $Host): static
+    public function setHost(?User $host): static
     {
-        $this->Host = $Host;
+        $this->host = $host;
 
         return $this;
     }

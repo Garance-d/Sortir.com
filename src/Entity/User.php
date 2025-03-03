@@ -102,7 +102,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Regex(
         pattern: '/^[a-zA-Z][a-zA-Z0-9._]{2,19}$/',
         message: 'The username your provided is not valid.')]
-
     private ?string $username = null;
 
     /**
@@ -114,6 +113,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->events = new ArrayCollection();
+        $this->roles = ['ROLE_USER'];
         $this->eventsHost = new ArrayCollection();
     }
 
