@@ -34,8 +34,12 @@ class FilterType extends AbstractType
                 'widget' => 'single_text', // Permet un affichage propre en input HTML5
                 'required' => false,
             ])
-            ->add('eventCheckb', CheckboxType::class, [
+            ->add('eventCheckbUser', CheckboxType::class, [
                 'label' => 'Événements auxquels je suis inscrit(e)',
+                'required' => false,
+            ])
+            ->add('eventCheckbHost', CheckboxType::class, [
+                'label' => 'Événements pour lesquels je suis l\'organisateur.rice',
                 'required' => false,
             ]);
     }

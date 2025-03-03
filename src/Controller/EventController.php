@@ -47,13 +47,25 @@ final class EventController extends AbstractController
             }
 
             if ($filters['date']) {
-                $queryBuilder->andWhere('e.startAt = :date')
-                    ->setParameter('date', $filters['date']);
+                $startOfDay = clone $filters['date'];
+                $startOfDay->setTime(0, 0, 0);
+
+                $endOfDay = clone $filters['date'];
+                $endOfDay->setTime(23, 59, 59);
+
+                $queryBuilder->andWhere('e.startAt BETWEEN :start_date AND :end_date')
+                    ->setParameter('start_date', $startOfDay)
+                    ->setParameter('end_date', $endOfDay);
             }
 
-            if ($filters['eventCheckb']) {
+            if ($filters['eventCheckbUser']) {
                 $queryBuilder->andWhere(':user MEMBER OF e.users')
                     ->setParameter('user', $this->getUser());
+            }
+            
+            if ($filters['eventCheckbHost']) {
+                $queryBuilder->andWhere('e.host = :host')
+                    ->setParameter('host', $this->getUser());
             }
 
             $events = $queryBuilder->getQuery()->getResult();
