@@ -54,12 +54,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     )]
     private ?string $lastName = null;
 
-    #[ORM\Column(length: 15)]
+    #[ORM\Column(length: 50)]
     #[Assert\Regex(
-        pattern: '/^(\+?\d{1,3}[-.\s]?)?(\d{2,3}[-.\s]?)?(\d{2,3}[-.\s]?\d{2,3}[-.\s]?\d{2,4})$/',
-        message: "The phone number is not a valid phone number."
-    )]
-    private ?string $phone = null;
+        pattern: '/^[a-zA-Z][a-zA-Z0-9._]{2,19}$/',
+        message: 'The username your provided is not valid.')]
+    private ?string $username = null;
 
     #[ORM\Column(length: 50)]
     #[Assert\NotNull(message: "L'email ne peut pas être nul.")]
@@ -68,6 +67,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         message: 'The email {{ value }} is not a valid email.',
     )]
     private ?string $email = null;
+
+    #[ORM\Column(length: 15)]
+    #[Assert\Regex(
+        pattern: '/^(\+?\d{1,3}[-.\s]?)?(\d{2,3}[-.\s]?)?(\d{2,3}[-.\s]?\d{2,3}[-.\s]?\d{2,4})$/',
+        message: "The phone number is not a valid phone number."
+    )]
+    private ?string $phone = null;
 
     /**
      * @var list<string> The user roles
@@ -97,12 +103,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Campus $campus = null;
-
-    #[ORM\Column(length: 50)]
-    #[Assert\Regex(
-        pattern: '/^[a-zA-Z][a-zA-Z0-9._]{2,19}$/',
-        message: 'The username your provided is not valid.')]
-    private ?string $username = null;
 
     /**
      * @var Collection<int, Event>
