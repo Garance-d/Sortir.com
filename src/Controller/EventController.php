@@ -3,18 +3,25 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Entity\Event;
 use App\Entity\Filter;
 use App\Entity\Location;
-use App\Entity\User;
+
 use App\Form\CreateEventFormType;
 use App\Form\FilterType;
 use App\Repository\EventRepository;
 use App\Repository\LocationRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use phpDocumentor\Reflection\Types\Void_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\UX\Map\InfoWindow;
 use Symfony\UX\Map\Map;
@@ -68,6 +75,7 @@ final class EventController extends AbstractController
             'filterForm' => $form->createView(),
         ]);
     }
+
     #[Route('/create/{id}', name: 'app_event_create', requirements: ['id' => '\d+'])]
     public function createEvent(int $id, Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -89,34 +97,35 @@ final class EventController extends AbstractController
             'createEventForm' => $form,
         ]);
     }
+
     // Afficher le détail de l'événement
     #[Route('/event/{id}', name: 'app_event_show')]
     public function show(Event $event, LocationRepository $locationRepository): Response
     {
         $location = $locationRepository->findAll();
         $map = (new Map())
-
             ->fitBoundsToMarkers();
 
 
         // With an info window associated to the marker:
 
         foreach ($location as $location) {
-        $map->addMarker(new Marker(
-            position: new Point($location->getLatitude(), $location->getLongitude()),
-            title: $location->getName(),
-            extra: [
-                'icon_mask_url' => 'https://maps.gstatic.com/mapfiles/place_api/icons/v2/tree_pinlet.svg',
-            ],
-            infoWindow: new InfoWindow(
-                headerContent: $event->getName(),
-                content: $location->getStreet(),
+            $map->addMarker(new Marker(
+                position: new Point($location->getLatitude(), $location->getLongitude()),
+                title: $location->getName(),
+
+                infoWindow: new InfoWindow(
+                    headerContent: '<b>' . $event->getName() . '</b>',
+                    content: $location->getStreet(),
+                    extra: [
+                        'num_items' => 3,
+                        'includes_link' => true,
+                    ],
+                ),
                 extra: [
-                    'num_items' => 3,
-                    'includes_link' => true,
+                    'icon_mask_url' => 'https://maps.gstatic.com/mapfiles/place_api/icons/v2/tree_pinlet.svg',
                 ],
-            ),
-        ));
+            ));
         }
         return $this->render('event/show.html.twig', [
             'event' => $event,
@@ -144,16 +153,37 @@ final class EventController extends AbstractController
     }
 
     // Supprimer un événement
-    #[Route('/event/{id}/delete', name: 'app_event_delete', methods: ['POST'])]
+    #[Route('/event/{id}/delete', name: 'app_event_delete')]
     public function delete(Request $request, Event $event, EntityManagerInterface $entityManager): Response
     {
         // Vérification du token CSRF pour éviter les suppressions non sécurisées
-        if ($this->isCsrfTokenValid('delete'.$event->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $event->getId(), $request->request->get('_token'))) {
+
             $entityManager->remove($event);
             $entityManager->flush();
         }
 
+        {
+            $transport = Transport::fromDsn('smtp://g.dev.informatique@gmail.com:djljvlbgzmdiazvr@smtp.gmail.com:587');
+            $mailer = new Mailer($transport);
+            $email = (new Email())
+                ->from('g.dev.informatique@gmail.com')
+                ->to('g.dev.informatique@gmail.com')
+                ->cc('g.dev.informatique@gmail.com')
+                //->bcc('bcc@example.com')
+                //->replyTo('fabien@example.com')
+                //->priority(Email::PRIORITY_HIGH)
+                ->subject('Votre évènement '.$event->getName().' de Sortir.com est supprimer')
+                ->text('Votre évenement '.$event->getName().' à bien été supprimer')
+                ->html('<p style="font-weight: normal">Votre évenement <span style="font-weight: bold">'.$event->getName().'</span> à bien été supprimer.</p> 
+                    <p style="font-style: italic; font-weight: normal">Ceci est un message automatiquement envoyer.</p>
+                    ');
+
+            $mailer->send($email);
+
+        }
+
         return $this->redirectToRoute('app_event');
     }
-}
 
+}

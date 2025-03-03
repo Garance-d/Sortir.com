@@ -9,6 +9,16 @@
 {{ form_start(editEventForm) }}
     {{ form_widget(editEventForm) }}
 <button type="submit">Sauvegarder les modifications</button>
-{{ form_end(editEventForm) }}
+
+    {{ form_end(editEventForm) }}
+
+    <div>
+        <form method="post" action="{{ path('app_event_delete', {'id': event.id}) }}" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet événement ?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ event.id) }}">
+            <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+        </form>
+    </div>
+
+
 
 {% endblock %}
