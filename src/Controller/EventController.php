@@ -126,7 +126,8 @@ final class EventController extends AbstractController
     public function show(Event $event, EntityManagerInterface $entityManager, LocationRepository $locationRepository): Response
     {
         $users = $entityManager->getRepository(User::class)->findAll();
-        $location = $locationRepository->findAll();
+//        $locations = $locationRepository->findAll();
+        $location = $event->getLocation();
         $map = (new Map())
 
             ->fitBoundsToMarkers();
@@ -134,7 +135,7 @@ final class EventController extends AbstractController
 
         // With an info window associated to the marker:
 
-        foreach ($location as $location) {
+//        foreach ($location as $location) {
         $map->addMarker(new Marker(
             position: new Point($location->getLatitude(), $location->getLongitude()),
             title: $location->getName(),
@@ -150,7 +151,7 @@ final class EventController extends AbstractController
                 'icon_mask_url' => 'https://maps.gstatic.com/mapfiles/place_api/icons/v2/tree_pinlet.svg',
             ],
         ));
-        }
+//        }
         return $this->render('event/show.html.twig', [
             'event' => $event,
             'map' => $map,
