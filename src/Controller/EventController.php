@@ -166,13 +166,13 @@ final class EventController extends AbstractController
 
         $today = new \DateTime();
 
-        if ($event->getStartAt() >= $today) {
+        if ($event->getStartAt() > $today) {
             $event->removeUser($currentUser);
             $entityManager->persist($event);
             $entityManager->flush();
             $this->addFlash('success', 'Vous avez été inscrit à l\'événement avec succès !');
         } else {
-            $this->addFlash('error', 'La date limite d\'inscription est dépassée. Vous ne pouvez plus vous inscrire à cet événement.');
+            $this->addFlash('error', 'L\'évènement a commencé. Vous ne pouvez plus vous désister de cet événement.');
         }
 
 
