@@ -35,40 +35,44 @@ class RegistrationController extends AbstractController
             /** @var string $plainPassword */
             $plainPassword = $form->get('plainPassword')->getData();
 
-
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
             $user->setRoles(['ROLE_USER']);
             $user->setAdministrator(false);
             $user->setActive(false);
 
+            // Сначала сохраняем пользователя в базе, чтобы получить ID
             $entityManager->persist($user);
             $entityManager->flush();
 
-
+            // Теперь у пользователя есть ID, можно генерировать уникальный токен
             $header = [
                 'typ' => 'JWT',
                 'alg' => 'HS256'
             ];
 
             $payload = [
-                'user_id' => $user->getId()
+                'user_id' => $user->getId(),  // Теперь ID существует
             ];
 
-            $token = $jwt->generate($header, $payload, $this->getParameter('app.jwtsecret'));
+            $token = $jwt->generate($header, $payload, $this->getParameter('app.jwt_secret'));
 
+            // Добавляем токен в пользователя и сохраняем снова
+            $user->setConfirmationToken($token);
+            $user->setConfirmationTokenExpiresAt(new \DateTime('+24 hours'));
+            $entityManager->flush();  // Повторный flush() после обновления токена
 
             $mailerService->sendConfirmationEmail(
                 'no-reply@sortir.com',
                 $user->getEmail(),
                 'Activation de votre compte sur Sortir.com',
-                'confirmation', // Correspond au fichier email/confirmation.html.twig
-                ['user' => $user, 'token' => $token] // Contexte sous forme de tableau
+                'confirmation',
+                compact('user', 'token')
             );
-
 
             $this->addFlash('success', 'Un e-mail de confirmation a été envoyé. Veuillez vérifier votre boîte mail.');
             return $this->redirectToRoute('app_login');
         }
+
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form,
@@ -116,28 +120,27 @@ class RegistrationController extends AbstractController
     #[Route('/confirm/{token}', name: 'app_confirm')]
     public function confirm(string $token, JWTService $jwt, EntityManagerInterface $em, UserRepository $userRepository): Response
     {
-        if ($jwt->isValid($token) && !$jwt->isExpired($token) && $jwt->check($token, $this->getParameter('app.jwtsecret'))) {
+        if ($jwt->isValid($token) && !$jwt->isExpired($token) && $jwt->check($token, $this->getParameter('app.jwt_secret'))) {
             $payload = $jwt->getPayload($token);
+            ////
+            if (!isset($payload['user_id'])) {
+                $this->addFlash('danger', 'Le token est invalide.');
+                return $this->redirectToRoute('app_register');
+            }
+
             $user = $userRepository->find($payload['user_id']);
 
-            if ($user) {
-                // Vérifie si le token a expiré
-                if ($user->getConfirmationTokenExpiresAt() < new \DateTime()) {
-                    $this->addFlash('danger', 'Votre lien de confirmation a expiré.');
-                    return $this->redirectToRoute('app_register');
-                }
 
-                if (!$user->isActive()) {
-                    $user->setActive(true);
-                    $user->setConfirmationToken(null); // Supprime le token après activation
-                    $em->flush();
 
-                    $this->addFlash('success', 'Votre compte est activé. Vous pouvez maintenant vous connecter.');
-                    return $this->redirectToRoute('app_login');
-                }
+            if (!$user->isActive()) {
+                $user->setActive(true);
+                $user->setConfirmationToken(null); // Supprime le token après activation
+                $em->flush();
+
+                $this->addFlash('success', 'Votre compte est activé. Vous pouvez maintenant vous connecter.');
+                return $this->redirectToRoute('app_login');
             }
         }
-
         $this->addFlash('danger', 'Le lien de confirmation est invalide ou a expiré.');
         return $this->redirectToRoute('app_register');
     }

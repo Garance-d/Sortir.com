@@ -7,6 +7,6 @@
 <body>
 <h2>Bonjour {{ user.username  }}</h2>
 <p>Veuillez cliquer sur le lien ci-dessous pour confirmer votre inscription :</p>
-<a href="{{ 'http://127.0.0.1:8000/confirm/' ~ token }}">Confirmer mon compte</a>
+<a href="{{ absolute_url(path('app_confirm', {token: token }))}}">Confirmer mon compte</a>
 </body>
 </html>

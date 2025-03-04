@@ -49,6 +49,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank(message: "L'email est requis.")]
     #[Assert\Email(message: 'L\'email {{ value }} n\'est pas valide.')]
+    #[Assert\Email(message: "L'email {{ value }} n'est pas valide.")]
+    #[Assert\Regex(
+        pattern: '/^[a-zA-Z0-9._%+-]+@campus-eni\.fr$/',
+        message: "Seuls les e-mails du domaine @campus-eni.fr sont autorisés."
+    )]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -58,7 +63,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?bool $administrator = null;
 
     #[ORM\Column]
-    #[Assert\NotBlank(message: "Le mot de passe est requis.")]
     private ?string $password = null;
 
     #[ORM\Column]

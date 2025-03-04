@@ -19,6 +19,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class RegistrationFormType extends AbstractType
 {
@@ -72,9 +73,13 @@ class RegistrationFormType extends AbstractType
                         'message' => 'Veuillez entrer un mot de passe',
                     ]),
                     new Length([
-                        'min' => 6,
+                        'min' => 8,
                         'minMessage' => 'Votre mot de passe doit contenir au moins {{ limit }} caractères',
                         'max' => 4096,
+                    ]),
+                    new Regex([
+                        'pattern' => '/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/',
+                        'message' => 'Votre mot de passe doit contenir au moins une majuscule, un chiffre et un caractère spécial.',
                     ]),
                 ],
             ])
@@ -88,9 +93,7 @@ class RegistrationFormType extends AbstractType
                 'multiple' => true,
                 'expanded' => false, // ou false selon votre besoin (checkbox ou select multiple)
             ])
-            ->add('save', SubmitType::class, [
-                'label' => 'SignUp',
-            ])
+
 
         ;
     }
