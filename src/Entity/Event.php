@@ -33,6 +33,7 @@ class Event
     #[ORM\Column]
     #[Assert\NotNull()] // par git ia
     #[Assert\LessThan(propertyPath: 'startAt')] // par git ia
+
     private ?\DateTimeImmutable $registrationEndsAt = null;
 
     #[ORM\Column]
@@ -51,11 +52,16 @@ class Event
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'events')]
     private Collection $users;
 
+    public function getUserCount(): int
+    {
+        return count($this->users);
+    }
+
     #[ORM\ManyToOne(inversedBy: 'events')]
     private ?EventStatus $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'eventsHost')]
-    private ?User $Host = null;
+    private ?User $host = null;
 
     public function __construct()
     {
@@ -196,12 +202,12 @@ class Event
 
     public function getHost(): ?User
     {
-        return $this->Host;
+        return $this->host;
     }
 
-    public function setHost(?User $Host): static
+    public function setHost(?User $host): static
     {
-        $this->Host = $Host;
+        $this->host = $host;
 
         return $this;
     }

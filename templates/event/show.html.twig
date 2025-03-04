@@ -31,5 +31,12 @@
         </div>
 
     </div>
-
+    </ul>
+    <div>
+        {{ ux_map(map, { style: 'height: 300px;' }) }}
+    </div>
+    <div>
+        <a href="{{ path('app_event_join', {'id': event.id, 'idUser': app.user.id}) }}" class="button">Join</a>
+        <a href="{{ path('app_event_quit', {'id': event.id, 'idUser': app.user.id}) }}" class="button">Quit</a>
+    </div>
 {% endblock %}

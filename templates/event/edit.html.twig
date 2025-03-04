@@ -6,8 +6,9 @@
 
 <h1>Modifier l'événement</h1>
 
-{{ form_start(editEventForm) }}
+    {{ form_start(editEventForm) }}
     {{ form_widget(editEventForm) }}
+
 <button type="submit">Sauvegarder les modifications</button>
 
     {{ form_end(editEventForm) }}
@@ -18,7 +19,5 @@
             <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
         </form>
     </div>
-
-
 
 {% endblock %}
