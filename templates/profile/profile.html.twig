@@ -6,6 +6,11 @@
         <div class="profile_structure">
 
             {% if app.user.id == profile_id %}
+                {% if app.user.profilePicture %}
+                    <img src="{{ asset('uploads/profile_pictures/' ~ app.user.profilePicture) }}" alt="Photo de profil" class="profile_picture" />
+                {% else %}
+                    <p><img src="{{ asset('img/default-profile.png') }}" alt="Photo de profil" class="profile_picture" /></p>
+                {% endif %}
                 <h1>Mon profil :</h1>
 
                 <ul>
@@ -21,6 +26,11 @@
             {% endif %}
 
             {% if app.user.id != profile_id %}
+                {% if user.profilePicture %}
+                    <img src="{{ asset('=uploads/profile_pictures/' ~ user.profilePicture) }}" alt="Photo de profil" />
+                {% else %}
+                    <p><img src="{{ asset('img/default-profile.png') }}" alt="Photo de profil" /></p>
+                {% endif %}
                 <h1>Profil de {{ user.firstName }} :</h1>
 
                 <ul>

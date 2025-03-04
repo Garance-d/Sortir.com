@@ -105,6 +105,16 @@ button:hover {
     height: auto;               /* Garde les proportions de l'image */
 }
 
+.profile_picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 20px auto; /* Centrage horizontal avec auto à gauche et droite */
+    border: 3px solid #ddd;
+    display: block; /* Nécessaire pour que le margin: auto fonctionne */
+}
+
 /* Centrer tout le contenu dans le conteneur */
 .profile_structure {
     text-align: center;
@@ -126,6 +136,30 @@ button:hover {
     justify-content: space-between; /* Espacement égal entre les titres et les valeurs */
     margin: 10px 0; /* Espacement vertical entre chaque ligne */
     font-size: 18px; /* Taille de police confortable */
+}
+
+.deletePhoto {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: red;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    margin: 0 auto; /* Centre horizontalement */
+    max-width: 150px;
+    display: block; /* Nécessaire pour que margin: auto fonctionne */
+}
+
+.deletePhoto:hover {
+    background-color: darkred; /* Couleur de fond au survol */
+    transform: scale(1.05); /* Légère augmentation de la taille au survol */
+}
+
+.deletePhoto:active {
+    background-color: crimson; /* Couleur au clic */
 }
 
     /* Responsive */

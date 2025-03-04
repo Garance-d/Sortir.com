@@ -21,7 +21,7 @@ use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class RegistrationFormType extends AbstractType
+class ModificationFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -32,7 +32,6 @@ class RegistrationFormType extends AbstractType
                 'required' => false,
                 'mapped' => false,
             ])
-
             ->add('firstname', TextType::class, [
                 'label' => 'Prénom',])
             ->add('lastname', TextType::class, [
@@ -46,20 +45,7 @@ class RegistrationFormType extends AbstractType
             ->add('phone', TelType::class, [
                 'label' => 'Téléphone',
             ])
-            ->add('campus', EntityType::class, [
-                'class' => Campus::class,
-                'choice_label' => 'name',
-                'label' => 'Campus',
-                'placeholder' => 'Sélectionnez votre campus',
-            ])
-            ->add('agreeTerms', CheckboxType::class, [
-                'mapped' => false,
-                'constraints' => [
-                    new IsTrue([
-                        'message' => 'You should agree to our terms.',
-                    ]),
-                ],
-            ])
+
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'invalid_message' => 'The password fields must match.',
@@ -81,27 +67,10 @@ class RegistrationFormType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('roles', ChoiceType::class, [
-                'choices' => [
-                    'User' => 'ROLE_USER',
-                    'Admin' => 'ROLE_ADMIN',
-                ],
-                'multiple' => true,
-                'expanded' => false, // ou false selon votre besoin (checkbox ou select multiple)
-            ])
-            ->add('agreeTerms', CheckboxType::class, [
-                'mapped' => false,
-                'constraints' => [
-                    new IsTrue([
-                        'message' => 'You should agree to our terms.',
-                    ]),
-                ],
-            ])
             ->add('save', SubmitType::class, [
-                'label' => 'S\'inscrire',
+                'label' => 'Modifier',
             ]);
     }
-
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([

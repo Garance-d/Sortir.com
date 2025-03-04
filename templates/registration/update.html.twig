@@ -7,14 +7,27 @@
         <div class="form-card">
             <h1>Modifier mon profil :</h1>
 
-            {{ form_errors(registrationForm) }}
+            {{ form_errors(modificationForm) }}
 
+            {{ form_start(modificationForm) }}
 
-            {{ form_start(registrationForm) }}
+            {% if app.user.profilePicture %}
+                <img src="{{ asset('uploads/profile_pictures/' ~ app.user.profilePicture) }}" alt="Photo de profil" class="profile_picture" />
+                <a href="{{ path('app_delete_photo', {'id': app.user.id}) }}" class="deletePhoto">Supprimer</a>
 
-            {{ form_widget(registrationForm) }}
+            {% else %}
+                {{ form_widget(modificationForm.profilePicture) }}
+            {% endif %}
 
-            {{ form_end(registrationForm) }}
+            {{ form_widget(modificationForm) }}
+
+            {{ form_end(modificationForm) }}
         </div>
     </div>
+
+    <script>
+        document.getElementById('deletePhotoBtn').addEventListener('click', function() {
+            document.getElementById('deletePhotoForm').submit();
+        });
+    </script>
 {% endblock %}

@@ -105,6 +105,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     private ?string $username = null;
 
+    #[ORM\Column(type:"string", length:255, nullable:true)]
+    private $profilePicture;
+
+    /**
+     * @return mixed
+     */
+    public function getProfilePicture()
+    {
+        return $this->profilePicture;
+    }
+
+    /**
+     * @param mixed $profilePicture
+     */
+    public function setProfilePicture($profilePicture): void
+    {
+        $this->profilePicture = $profilePicture;
+    }
+
     public function __construct()
     {
         $this->events = new ArrayCollection();
