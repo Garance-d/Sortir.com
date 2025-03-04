@@ -27,7 +27,7 @@ class EventFixtures extends Fixture
 
         // Création de quelques statuts
         $statuses = [];
-        $statusLabels = ['En attente', 'Confirmé', 'Annulé'];
+        $statusLabels = ['OPEN', 'CLOSED', 'CANCELLED', 'ON GOING', 'DONE'];
 
         foreach ($statusLabels as $label) {
             $status = new EventStatus();

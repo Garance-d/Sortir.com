@@ -3,6 +3,7 @@
 
 namespace App\Controller;
 
+use App\Entity\EventStatus;
 use App\Entity\User;
 use App\Entity\Event;
 use App\Entity\Filter;
@@ -15,6 +16,7 @@ use App\Repository\LocationRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use phpDocumentor\Reflection\Types\Void_;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -84,6 +86,10 @@ final class EventController extends AbstractController
 
         $event->setHost($currentUser);
 
+        if ($event->getStatus()=== null) {
+            $event ->setStatus('OPEN');
+        }
+
         $form = $this->createForm(CreateEventFormType::class, $event);
         $form->handleRequest($request);
 
@@ -98,7 +104,33 @@ final class EventController extends AbstractController
         ]);
     }
 
-    // Afficher le détail de l'événement
+    // Cancel an event // par git ia
+    #[Route('/event/{id}/cancel', name: 'app_event_cancel')]
+    public function cancelEvent(int $id, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $event = $entityManager->getRepository(Event::class)->find($id);
+        if (!$event) {
+            throw $this->createNotFoundException("Event not found");
+        }
+        $event->getStatus('CANCELLED');
+        $entityManager->flush();
+        return $this->redirectToRoute('app_event_show');
+    }
+    // Update event // par git ia
+    #[Route('/event/{id}/update-status', name: 'app_event_update_status')]
+    public function updateStatusEvent(int $id, Request $request, EntityManagerInterface $entityManager, Event $event): Response
+    {
+        $event = $entityManager->getRepository(Event::class)->find($id);
+        if (!$event) {
+            throw $this->createNotFoundException("Event not found");
+        }
+        $event->updateStatus();
+        $entityManager->flush();
+        return $this->redirectToRoute('app_event_show');
+    }
+
+
+    // Show details events
     #[Route('/event/{id}', name: 'app_event_show')]
     public function show(Event $event): Response
     {
@@ -141,6 +173,7 @@ final class EventController extends AbstractController
         $form = $this->createForm(CreateEventFormType::class, $event);
         $form->handleRequest($request);
 
+
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
             return $this->redirectToRoute('app_event');
@@ -151,6 +184,30 @@ final class EventController extends AbstractController
             'event' => $event,
         ]);
     }
+
+    // Mofifier un événement
+    #[Route('/event/{id}/modify', name: 'app_event_modify')]
+    public function modify(Request $request, Event $event, EntityManagerInterface $entityManager): Response
+    {
+        $status = $entityManager->getRepository(EventStatus::class)->find(1);
+        $event->setStatus($status);
+        $entityManager->modify($event);
+        $entityManager->flush();
+
+        if ($status->isSubmitted() && $status->isValid()) {
+            $status->isUpdated()->getLabel('OPEN');
+        }
+        if ($status->isValid()) {
+            $status->isUpdated()->getLabel('MODIFIED');
+        }
+            $status->isRegistrationEndsAt()->getLabel('CLOSED');
+            $status->isEventCancelled()->getLabel('CANCELLED');
+            $status->isStartAt()->getLabel('ON GOING');
+            $status->isEventOver()->getLabel('DONE');
+
+        return $this->redirectToRoute('app_event_edit');
+    }
+
 
     // Supprimer un événement
     #[Route('/event/{id}/delete', name: 'app_event_delete')]
@@ -175,7 +232,7 @@ final class EventController extends AbstractController
                 //->priority(Email::PRIORITY_HIGH)
                 ->subject('Votre évènement '.$event->getName().' de Sortir.com est supprimer')
                 ->text('Votre évenement '.$event->getName().' à bien été supprimer')
-                ->html('<p style="font-weight: normal">Votre évenement <span style="font-weight: bold">'.$event->getName().'</span> à bien été supprimer.</p> 
+                ->html('<p style="font-weight: normal">Votre évenement <span style="font-weight: bold">'.$event->getName().'</span> à bien été supprimer.</p>
                     <p style="font-style: italic; font-weight: normal">Ceci est un message automatiquement envoyer.</p>
                     ');
 
