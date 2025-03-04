@@ -100,9 +100,9 @@ final class EventController extends AbstractController
 
     // Afficher le détail de l'événement
     #[Route('/event/{id}', name: 'app_event_show')]
-    public function show(Event $event, LocationRepository $locationRepository): Response
+    public function show(Event $event): Response
     {
-        $location = $locationRepository->findAll();
+        $location = $event->getLocation();
         $map = (new Map())
             ->fitBoundsToMarkers();
 
