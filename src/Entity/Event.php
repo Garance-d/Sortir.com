@@ -12,6 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: EventRepository::class)]
 class Event
 {
+    public const STATUS_LABELS = ['OPEN','CLOSED','CANCELLED','ON GOING','DONE'];
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -21,17 +22,18 @@ class Event
     private ?string $name = null;
 
     #[ORM\Column]
-    #[Assert\NotNull]
+    #[Assert\NotNull()] // par git ia
     private ?\DateTimeImmutable $startAt = null;
 
     #[ORM\Column]
-    #[Assert\NotNull]
-    #[Assert\Positive]
+    #[Assert\NotNull()] // par git ia
+    #[Assert\Positive()] // par git ia
     private ?int $duration = null;
 
     #[ORM\Column]
-    #[Assert\NotNull]
-    #[Assert\LessThan(propertyPath: "startAt")]
+    #[Assert\NotNull()] // par git ia
+    #[Assert\LessThan(propertyPath: 'startAt')] // par git ia
+
     private ?\DateTimeImmutable $registrationEndsAt = null;
 
     #[ORM\Column]
@@ -189,6 +191,10 @@ class Event
 
     public function setStatus(?EventStatus $status): static
     {
+        if (!in_array($status, static::STATUS_LABELS)) {
+            throw new \InvalidArgumentException("Invalid value label");
+        }
+
         $this->status = $status;
 
         return $this;
@@ -204,5 +210,19 @@ class Event
         $this->host = $host;
 
         return $this;
+    }
+
+    public function updateStatus(): void { // par git ia
+        $now = new \DateTimeImmutable();
+
+        if ($this->status !== 'CANCELLED'){
+            if ($this->getRegistrationEndsAt() <= $now || $this->getUsersCount() >= $this->maxUsers()) {
+                $this->setStatus('CLOSED');
+            } elseif ($this->getStartAt() <= $now && $now <= $this->getStartAt() ->modify('+'.$this->getDuration().'minutes')) {
+                $this->setStatus('ONGOING');
+            } elseif ($this->getStartAt() ->modify(('+' .$this->getDuration().'minutes') < $now)) {
+                $this->setStatus('DONE');
+            }
+        }
     }
 }
