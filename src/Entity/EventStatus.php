@@ -6,6 +6,7 @@ use App\Repository\EventStatusRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 
 #[ORM\Entity(repositoryClass: EventStatusRepository::class)]
 class EventStatus
@@ -75,4 +76,15 @@ class EventStatus
 
         return $this;
     }
+//    public function prePersist(Event $event, LifecycleEventArgs $args): void // git ia
+//    {
+//        // Lors de la création de l'évènement, l'évènement passe en "OPEN"
+//        $event->setStatus('OPEN');
+//    }
+//
+//    public function preUpdate(Event $event, LifecycleEventArgs $args): void //git ia
+//    {
+//        // Met à jour le statut de l'événement en fonction des conditions spécifiées
+//        $event->updateStatus();
+//    }
 }

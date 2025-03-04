@@ -121,9 +121,6 @@ final class EventController extends AbstractController
 
         $event->setHost($currentUser);
 
-        if ($event->getStatus()=== null) {
-            $event ->setStatus('OPEN');
-        }
 
         $form = $this->createForm(CreateEventFormType::class, $event);
         $form->handleRequest($request);
@@ -139,59 +136,30 @@ final class EventController extends AbstractController
         ]);
     }
 
-    // Cancel an event // par git ia
-    #[Route('/event/{id}/cancel', name: 'app_event_cancel')]
-    public function cancelEvent(int $id, Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $event = $entityManager->getRepository(Event::class)->find($id);
-        if (!$event) {
-            throw $this->createNotFoundException("Event not found");
-        }
-        $event->getStatus('CANCELLED');
-        $entityManager->flush();
-        return $this->redirectToRoute('app_event_show');
-    }
-    // Update event // par git ia
-    #[Route('/event/{id}/update-status', name: 'app_event_update_status')]
-    public function updateStatusEvent(int $id, Request $request, EntityManagerInterface $entityManager, Event $event): Response
-    {
-        $event = $entityManager->getRepository(Event::class)->find($id);
-        if (!$event) {
-            throw $this->createNotFoundException("Event not found");
-        }
-        $event->updateStatus();
-        $entityManager->flush();
-        return $this->redirectToRoute('app_event_show');
-    }
-
-
     // Show details events
-     #[Route('/event/{id}', name: 'app_event_show')]
-    public function show(Event $event, EntityManagerInterface $entityManager): Response
+    #[Route('/event/{id}', name: 'app_event_show')]
+    public function show(Event $event,EntityManagerInterface $entityManager): Response
     {
         $users = $entityManager->getRepository(User::class)->findAll();
-
         $location = $event->getLocation();
         $map = (new Map())
             ->fitBoundsToMarkers();
-        $map->addMarker(new Marker(
-            position: new Point($location->getLatitude(), $location->getLongitude()),
-            title: $location->getName(),
-            infoWindow: new InfoWindow(
-                headerContent: $event->getName(),
-                content: $location->getStreet(),
+
+            $map->addMarker(new Marker(
+                position: new Point($location->getLatitude(), $location->getLongitude()),
+                title: $location->getName(),
+                infoWindow: new InfoWindow(
+                    headerContent: '<b>' . $event->getName() . '</b>',
+                    content: $location->getStreet(),
                     extra: [
                         'num_items' => 3,
                         'includes_link' => true,
                     ],
                 ),
-
                 extra: [
                     'icon_mask_url' => 'https://maps.gstatic.com/mapfiles/place_api/icons/v2/tree_pinlet.svg',
                 ],
-
             ));
-        }
 
         return $this->render('event/show.html.twig', [
             'event' => $event,
@@ -272,34 +240,32 @@ final class EventController extends AbstractController
         ]);
     }
 
-
-    // Mofifier un événement
-    #[Route('/event/{id}/modify', name: 'app_event_modify')]
-    public function modify(Request $request, Event $event, EntityManagerInterface $entityManager): Response
-    {
-        $status = $entityManager->getRepository(EventStatus::class)->find(1);
-        $event->setStatus($status);
-        $entityManager->modify($event);
-        $entityManager->flush();
-
-        if ($status->isSubmitted() && $status->isValid()) {
-            $status->isUpdated()->getLabel('OPEN');
-        }
-        if ($status->isValid()) {
-            $status->isUpdated()->getLabel('MODIFIED');
-        }
-            $status->isRegistrationEndsAt()->getLabel('CLOSED');
-            $status->isEventCancelled()->getLabel('CANCELLED');
-            $status->isStartAt()->getLabel('ON GOING');
-            $status->isEventOver()->getLabel('DONE');
-
-        return $this->redirectToRoute('app_event_edit');
-    }
+    // Modify the statue of an event
+//    #[Route('/event/{id}/modify', name: 'app_event_modify')]
+//    public function modify(Request $request, Event $event, EntityManagerInterface $entityManager): Response
+//    {
+//        $status = $entityManager->getRepository(EventStatus::class)->find(1);
+//        $event->setStatus($status);
+//        $entityManager->modify($event);
+//        $entityManager->flush();
+//
+//        if ($status->isSubmitted() && $status->isValid()) {
+//            $status->isUpdated()->getLabel('OPEN');
+//        }
+//        if ($status->isValid()) {
+//            $status->isUpdated()->getLabel('MODIFIED');
+//        }
+//            $status->isRegistrationEndsAt()->getLabel('CLOSED');
+//            $status->isEventCancelled()->getLabel('CANCELLED');
+//            $status->isStartAt()->getLabel('ON GOING');
+//            $status->isEventOver()->getLabel('DONE');
+//
+//        return $this->redirectToRoute('app_event_edit');
+//    }
 
 
     // Supprimer un événement
     #[Route('/event/{id}/delete', name: 'app_event_delete')]
-
     public function delete(Request $request, Event $event, EntityManagerInterface $entityManager): Response
     {
         // Vérification du token CSRF pour éviter les suppressions non sécurisées

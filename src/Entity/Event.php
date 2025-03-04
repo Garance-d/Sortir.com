@@ -12,7 +12,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: EventRepository::class)]
 class Event
 {
-    public const STATUS_LABELS = ['OPEN','CLOSED','CANCELLED','ON GOING','DONE'];
+//    public const STATUS_LABELS = ['OPEN', 'CLOSED', 'CANCELLED', 'ONGOING', 'DONE']; // git ia
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -22,18 +23,17 @@ class Event
     private ?string $name = null;
 
     #[ORM\Column]
-    #[Assert\NotNull()] // par git ia
+    #[Assert\NotNull()] // git ia
     private ?\DateTimeImmutable $startAt = null;
 
     #[ORM\Column]
-    #[Assert\NotNull()] // par git ia
-    #[Assert\Positive()] // par git ia
+//    #[Assert\NotNull()] // git ia
+//    #[Assert\Positive()] // git ia
     private ?int $duration = null;
 
     #[ORM\Column]
-    #[Assert\NotNull()] // par git ia
-    #[Assert\LessThan(propertyPath: 'startAt')] // par git ia
-
+//    #[Assert\NotNull()] // git ia
+//    #[Assert\LessThan(propertyPath: 'startAt')] // git ia
     private ?\DateTimeImmutable $registrationEndsAt = null;
 
     #[ORM\Column]
@@ -66,6 +66,7 @@ class Event
     public function __construct()
     {
         $this->users = new ArrayCollection();
+//        $this->status = 'OPEN';  // Lors de la création de l'évènement, l'évènement passe en "OPEN" // git ia
     }
 
     public function getId(): ?int
@@ -191,10 +192,9 @@ class Event
 
     public function setStatus(?EventStatus $status): static
     {
-        if (!in_array($status, static::STATUS_LABELS)) {
-            throw new \InvalidArgumentException("Invalid value label");
-        }
-
+//        if (!in_array($status, self::STATUS_LABELS)) { //git ia
+//            throw new \InvalidArgumentException("Invalid status value"); // git ia
+//        }
         $this->status = $status;
 
         return $this;
@@ -212,17 +212,25 @@ class Event
         return $this;
     }
 
-    public function updateStatus(): void { // par git ia
-        $now = new \DateTimeImmutable();
+//    public function updateStatus(): void // git ia
+//    {
+//        $now = new \DateTimeImmutable();
+//
+//        if ($this->status !== 'CANCELLED') {
+//            if ($this->registrationEndsAt <= $now || $this->getUsers()->count() >= $this->maxUsers) {
+//                $this->status = 'CLOSED';
+//            } elseif ($this->startAt <= $now && $now <= $this->startAt->modify('+' . $this->duration . ' minutes')) {
+//                $this->status = 'ONGOING';
+//            } elseif ($this->startAt->modify('+' . $this->duration . ' minutes') < $now) {
+//                $this->status = 'DONE';
+//            }
+//        }
+//    }
+//
+//    public function cancelEvent(): void // git ia
+//    {
+//        $this->status = 'CANCELLED';
+//    }
 
-        if ($this->status !== 'CANCELLED'){
-            if ($this->getRegistrationEndsAt() <= $now || $this->getUsersCount() >= $this->maxUsers()) {
-                $this->setStatus('CLOSED');
-            } elseif ($this->getStartAt() <= $now && $now <= $this->getStartAt() ->modify('+'.$this->getDuration().'minutes')) {
-                $this->setStatus('ONGOING');
-            } elseif ($this->getStartAt() ->modify(('+' .$this->getDuration().'minutes') < $now)) {
-                $this->setStatus('DONE');
-            }
-        }
-    }
+
 }
