@@ -3,10 +3,11 @@
 {% block title %}Liste des événements{% endblock %}
 
 {% block body %}
-    <div>
+    <div class="" id="filter" style="color: whitesmoke; ">
         {{ form_start(filterForm) }}
+
         {{ form_widget(filterForm) }}
-        <button class="btn">Appliquer le filtre</button>
+        <button class="btn border-light mb-3" style="color: whitesmoke">Appliquer le filtre</button>
         {{ form_end(filterForm) }}
     </div>
 

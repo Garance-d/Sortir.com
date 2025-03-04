@@ -1,3 +1,13 @@
+Navimg {
+background-image: url("../img/cailloux-orangeC1.jpg");
+    width: 200vh;
+    background-size: contain;
+}
+
+header a{
+    color: whitesmoke;
+    font-size: 25px
+}
 
 
 

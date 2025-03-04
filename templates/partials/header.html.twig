@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg" >
+<nav class="navbar navbar-expand-lg" id="Navimg" style="background-image: "img/cailloux-orangeC">.jpg
 
     <a class="navbar-brand" href="{{ path('app_home') }}">
         <img src="{{ asset('img/logo2.png') }}" width="60" height="60" alt="logo">
@@ -7,11 +7,10 @@
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse card-img-overlay" id="navbarNavAltMarkup" >
-        <img src="{{ asset('img/cailloux-orangeC1.jpg') }}" alt="..." style=" width: 200vh; background-size: contain; " >
-        <div class="card-img-overlay" >
+{#    <div class="collapse navbar-collapse card-img-overlay" id="navbarNavAltMarkup" >}#}
+
         <div class="navbar-nav">
-            <a class="nav-item nav-link" style="color: whitesmoke; font-family: Oswald; font-size: 25px" href="{{ path('app_home') }}">Home</a>
+            <a class="nav-item nav-link" style="" href="{{ path('app_home') }}">Home</a>
             <a class="nav-item nav-link active" style="color: whitesmoke; font-family: Oswald; font-size: 25px" href="{{ path('app_event') }}">Events</a>
             {% if app.user is not null %}
                 <a class="nav-item nav-link active" style="color: whitesmoke; font-family: Oswald; font-size: 25px" href="{{ path('app_event_create', {'id': app.user.id }) }}">Create Event</a>
