@@ -99,6 +99,7 @@ class EventFixtures extends Fixture
             $hashedPassword = $this->passwordHasher->hashPassword($user, $plainPassword);
             $user->setPassword($hashedPassword);
             $user->setAdministrator($faker->boolean());
+            $user->setProfilePicture($faker->imageUrl());
             if ($user->isAdministrator() == true) {
                 $user->setRoles(['ROLE_ADMIN']);
             } else {

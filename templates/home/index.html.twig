@@ -3,23 +3,27 @@
 {% block title %}Accueil{% endblock %}
 
 {% block body %}
-
-
-    <section>
-        <h2>Bienvenue sur notre site dédié aux étudiants de l'ENI !</h2>
-        <img src="{{ asset('img/Home_image.webp') }}" alt="Etudiants faisant la fête" class="img">
-        <p>
-            Nous avons créé cet espace pour vous offrir une plateforme simple et conviviale afin d’organiser des moments de détente et de convivialité
-            entre étudiants. Que vous soyez à la recherche d’une soirée décontractée entre amis ou d’une aventure un peu plus originale, vous êtes au bon endroit !
-        </p>
-        <p>
-            Ici, tout est pensé pour favoriser les échanges et renforcer les liens au sein de notre école. L’objectif principal est de passer un bon moment ensemble,
-            que ce soit pour discuter autour d'un verre au bar ou pour partir à l’aventure, comme aller faire du ski-nautique pendant l’été : l’essentiel est de se retrouver et de s’amuser !
-        </p>
-    </section>
-
-    <div>
-        {{ ux_map(map, { style: 'height: 300px;' }) }}
+    <div class="form-container">
+        <div class="form-card">
+            <section>
+                <h2>Bienvenue sur notre site dédié aux étudiants de l'ENI !</h2>
+                <img src="{{ asset('img/Home_image.webp') }}" alt="Etudiants faisant la fête" class="img">
+                <p>
+                    Nous avons créé cet espace pour vous offrir une plateforme simple et conviviale afin d’organiser des
+                    moments de détente et de convivialité
+                    entre étudiants. Que vous soyez à la recherche d’une soirée décontractée entre amis ou d’une
+                    aventure un peu plus originale, vous êtes au bon endroit !
+                </p>
+                <p>
+                    Ici, tout est pensé pour favoriser les échanges et renforcer les liens au sein de notre école.
+                    L’objectif principal est de passer un bon moment ensemble,
+                    que ce soit pour discuter autour d'un verre au bar ou pour partir à l’aventure, comme aller faire du
+                    ski-nautique pendant l’été : l’essentiel est de se retrouver et de s’amuser !
+                </p>
+            </section>
+            <div>
+                {{ ux_map(map, { style: 'height: 300px;' }) }}
+            </div>
+        </div>
     </div>
-
 {% endblock %}

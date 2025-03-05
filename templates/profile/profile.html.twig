@@ -3,11 +3,15 @@
 {% block title %}Update{% endblock %}
 
 {% block body %}
-        <div class="profile_structure">
-
+    <div class="form-container">
+        <div class="form-card">
             {% if app.user.id == profile_id %}
+                {% if app.user.profilePicture %}
+                    <img src="{{ asset('uploads/profile_pictures/' ~ app.user.profilePicture) }}" alt="Photo de profil" class="profile_picture img" />
+                {% else %}
+                    <p><img src="{{ asset('img/default-profile.png') }}" alt="Photo de profil" class="profile_picture" /></p>
+                {% endif %}
                 <h1>Mon profil :</h1>
-
                 <ul>
                     <li><strong>Nom : </strong> {{ user.lastName }}</li>
                     <li><strong>Prénom : </strong> {{ user.firstName }}</li>
@@ -17,12 +21,14 @@
                     <li><strong>Campus : </strong> {{ user.campus.name }}</li>
                 </ul>
                 <a href="{{ path('app_update', {'id': app.user.id}) }}" class="button">Modifier</a>
-
             {% endif %}
-
             {% if app.user.id != profile_id %}
+                {% if user.profilePicture %}
+                    <img src="{{ asset('=uploads/profile_pictures/' ~ user.profilePicture) }}" alt="Photo de profil" />
+                {% else %}
+                    <p><img src="{{ asset('img/default-profile.png') }}" alt="Photo de profil" /></p>
+                {% endif %}
                 <h1>Profil de {{ user.firstName }} :</h1>
-
                 <ul>
                     <li><strong>Nom : </strong> {{ user.lastName }}</li>
                     <li><strong>Prénom : </strong> {{ user.firstName }}</li>
@@ -32,4 +38,5 @@
                 </ul>
             {% endif %}
         </div>
+    </div>
 {% endblock %}

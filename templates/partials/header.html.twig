@@ -2,24 +2,30 @@
     <a class="navbar-brand" href="{{ path('app_home') }}">
         <img src="{{ asset('img/logo2.png') }}" width="60" height="60" alt="logo">
     </a>
-    <a class="navbar-brand" href="{{ path('app_city_index') }}">Cities</a>
-    <a class="navbar-brand" href="{{ path('app_location_index') }}">Places</a>
+
+    {% if is_granted('ROLE_ADMIN') %}
+        <a class="navbar-brand" href="{{ path('app_city_index') }}">Villes</a>
+        <a class="navbar-brand" href="{{ path('app_location_index') }}">Lieux</a>
+        <a class="navbar-brand" href="{{ path('app_dashboard') }}">Administrateur</a>
+    {% endif %}
+
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-            <a class="nav-item nav-link" href="{{ path('app_home') }}">Home</a>
-            <a class="nav-item nav-link active" href="{{ path('app_event') }}">Events</a>
+            <a class="nav-item nav-link" href="{{ path('app_home') }}">Accueil</a>
+            <a class="nav-item nav-link active" href="{{ path('app_event') }}">Événements</a>
             {% if app.user is not null %}
-                <a class="nav-item nav-link active" href="{{ path('app_event_create', {'id': app.user.id }) }}">Create Event</a>
-                <a class="nav-item nav-link" href="{{ path('app_profile', {'id': app.user.id }) }}">Profile</a>
-                <a class="nav-item nav-link " href="{{ path('app_logout') }}">Log Out</a>
+                <a class="nav-item nav-link active" href="{{ path('app_event_create', {'id': app.user.id }) }}">Créer un événement</a>
+                <a class="nav-item nav-link" href="{{ path('app_profile', {'id': app.user.id }) }}">Profil</a>
+                <a class="nav-item nav-link " href="{{ path('app_logout') }}">Se déconnecter</a>
             {%  else %}
-                <a class="nav-item nav-link" href="{{ path('app_login') }}">Sign In</a>
-                <a class="nav-item nav-link" href="{{ path('app_register') }}">Sign Up</a>
+                <a class="nav-item nav-link" href="{{ path('app_login') }}">se connecter</a>
+                <a class="nav-item nav-link" href="{{ path('app_register') }}">S'inscrire</a>
             {% endif %}
+
         </div>
     </div>
 </nav>

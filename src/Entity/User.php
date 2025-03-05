@@ -61,6 +61,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         message: "Le nom d'utilisateur doit contenir entre 3 et 20 caractères, avec uniquement des lettres, chiffres, points et underscores."
     )]    private ?string $username = null;
 
+    #[ORM\Column(type:"string", length:255, nullable:true)]
+    private $profilePicture;
+
     #[ORM\Column(length: 50)]
     #[Assert\NotNull(message: "L'email ne peut pas être nul.")]
     #[Assert\NotBlank(message: "L'email ne peut pas être vide.")]
@@ -327,6 +330,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->username = $username;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProfilePicture()
+    {
+        return $this->profilePicture;
+    }
+
+    /**
+     * @param mixed $profilePicture
+     */
+    public function setProfilePicture($profilePicture): void
+    {
+        $this->profilePicture = $profilePicture;
     }
 
     /**
