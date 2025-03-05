@@ -40,26 +40,24 @@ class RegistrationController extends AbstractController
             $user->setAdministrator(false);
             $user->setActive(false);
 
-            // Сначала сохраняем пользователя в базе, чтобы получить ID
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // Теперь у пользователя есть ID, можно генерировать уникальный токен
             $header = [
                 'typ' => 'JWT',
                 'alg' => 'HS256'
             ];
 
             $payload = [
-                'user_id' => $user->getId(),  // Теперь ID существует
+                'user_id' => $user->getId(),
             ];
 
             $token = $jwt->generate($header, $payload, $this->getParameter('app.jwt_secret'));
 
-            // Добавляем токен в пользователя и сохраняем снова
+
             $user->setConfirmationToken($token);
             $user->setConfirmationTokenExpiresAt(new \DateTime('+24 hours'));
-            $entityManager->flush();  // Повторный flush() после обновления токена
+            $entityManager->flush();
 
             $mailerService->sendConfirmationEmail(
                 'no-reply@sortir.com',
@@ -72,43 +70,33 @@ class RegistrationController extends AbstractController
             $this->addFlash('success', 'Un e-mail de confirmation a été envoyé. Veuillez vérifier votre boîte mail.');
             return $this->redirectToRoute('app_login');
         }
-
-
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form,
         ]);
     }
-
-
     #[Route('/update/{id}', name: 'app_update', requirements: ['id' => '\d+'])]
     public function update(int $id, Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
-        // Trouver l'utilisateur par ID
         $user = $entityManager->getRepository(User::class)->find($id);
 
         if (!$user) {
-            // Si l'utilisateur n'existe pas, rediriger ou afficher un message d'erreur
-            return $this->redirectToRoute('app_register');  // Redirection vers la page d'inscription par exemple
+            return $this->redirectToRoute('app_register');
         }
 
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Vérifier si un nouveau mot de passe a été renseigné
             /** @var string $plainPassword */
             $plainPassword = $form->get('plainPassword')->getData();
 
             if (!empty($plainPassword)) {
-                // Si un mot de passe a été fourni, on le hache et on le met à jour
                 $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
             }
 
-            // Enregistrer les autres informations sans toucher au mot de passe si celui-ci n'a pas été modifié
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // Rediriger vers la page de connexion ou autre page après mise à jour
             return $this->redirectToRoute('app_login');
         }
 
@@ -116,7 +104,6 @@ class RegistrationController extends AbstractController
             'registrationForm' => $form->createView(),
         ]);
     }
-
     #[Route('/confirm/{token}', name: 'app_confirm')]
     public function confirm(string $token, JWTService $jwt, EntityManagerInterface $em, UserRepository $userRepository): Response
     {
@@ -130,11 +117,9 @@ class RegistrationController extends AbstractController
 
             $user = $userRepository->find($payload['user_id']);
 
-
-
             if (!$user->isActive()) {
                 $user->setActive(true);
-                $user->setConfirmationToken(null); // Supprime le token après activation
+                $user->setConfirmationToken(null);
                 $em->flush();
 
                 $this->addFlash('success', 'Votre compte est activé. Vous pouvez maintenant vous connecter.');
