@@ -11,9 +11,22 @@
 
             {{ form_start(registrationForm) }}
 
+            {% if app.user.profilePicture %}
+                <img src="{{ asset('uploads/profile_pictures/' ~ app.user.profilePicture) }}" alt="Photo de profil" class="profile_picture" />
+                <a href="{{ path('app_delete_photo', {'id': app.user.id}) }}" class="deletePhoto">Supprimer</a>
+
+            {% else %}
+                {{ form_widget(registrationForm.profilePicture) }}
+            {% endif %}
+
             {{ form_widget(registrationForm) }}
 
             {{ form_end(registrationForm) }}
         </div>
     </div>
+    <script>
+        document.getElementById('deletePhotoBtn').addEventListener('click', function() {
+            document.getElementById('deletePhotoForm').submit();
+        });
+    </script>
 {% endblock %}

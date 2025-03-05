@@ -1,5 +1,7 @@
 parameters:
     app.jwtsecret: '%env(JWT_SECRET)%'
+    profile_pictures_directory: '%kernel.project_dir%/public/uploads/profile_pictures'
+
 services:
     # default configuration for services in *this* file
     _defaults:
