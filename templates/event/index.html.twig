@@ -1,8 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello EventController!{% endblock %}
+{% block title %}Liste des événements{% endblock %}
 
 {% block body %}
+    <div>
+        {{ form_start(filterForm) }}
+        {{ form_widget(filterForm) }}
+        <button class="btn">Appliquer le filtre</button>
+        {{ form_end(filterForm) }}
+    </div>
+
     <div class="container mt-4">
         <div class="card">
             <div class="card-body">
@@ -13,26 +20,40 @@
                         <th>Nom</th>
                         <th>Date de début</th>
                         <th>Fin des inscriptions</th>
-                        <th>Max participants</th>
+                        <th>Participants</th>
                         <th>Description</th>
                         <th>Adresse</th>
                         <th>Statut</th>
+                        <th>Organisateur</th>
+                        <th>Actions</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for event in events %}
                         <tr>
-                            <td>{{ event.name }}</td>
+                            <td><a href="{{ path('app_event_show', {'id': event.id}) }}">{{ event.name }}</a></td>
                             <td>{{ event.startAt|date('d/m/Y') }}</td>
                             <td>{{ event.registrationEndsAt|date('d/m/Y') }}</td>
-                            <td>{{ event.maxUsers }}</td>
+                            <td>{{ event.getUserCount() }}/{{ event.maxUsers }}</td>
                             <td>{{ event.description }}</td>
                             <td>{{ event.location.street }}</td>
                             <td>{{ event.status.label }}</td>
+                            <td>
+                                {% if event.host.username is defined and event.host.username is not empty %}
+                                    {{ event.host.username }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ path('app_event_edit', {'id': event.id}) }}" class="button">Éditer</a>
+                                <form method="post" action="{{ path('app_event_delete', {'id': event.id}) }}" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet événement ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ event.id) }}">
+                                    <button type="submit" class="button">Supprimer</button>
+                                </form>
+                            </td>
                         </tr>
                     {% else %}
                         <tr>
-                            <td colspan="7" class="text-center">Aucun événement trouvé.</td>
+                            <td colspan="8" class="text-center">Aucun événement trouvé.</td>
                         </tr>
                     {% endfor %}
                     </tbody>

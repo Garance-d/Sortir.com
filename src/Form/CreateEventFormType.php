@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Form;
 
 use App\Entity\EventStatus;
@@ -14,7 +15,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use App\Entity\Event; // Assuming your entity is named "Event"
+use App\Entity\Event;
 
 class CreateEventFormType extends AbstractType
 {
@@ -28,7 +29,7 @@ class CreateEventFormType extends AbstractType
                 'label' => 'Description',
             ])
             ->add('startAt', DateTimeType::class, [
-                'widget' => 'single_text', // Enables HTML5 date picker
+                'widget' => 'single_text',
             ])
             ->add('registrationEndsAt', DateTimeType::class, [
                 'widget' => 'single_text',
@@ -39,13 +40,8 @@ class CreateEventFormType extends AbstractType
             ->add('maxUsers', IntegerType::class, [
                 'label' => 'Nombre max de participants',
             ])
-            ->add('location', LocationType::class, [ // Ajoute le sous-formulaire
-                'label' => false, // Supprime le label principal
-            ])
-            ->add('users', CollectionType::class, [
-                'entry_type' => TextType::class, // Or another form type for users
-                'allow_add' => true,
-                'by_reference' => false,
+            ->add('location', LocationType::class, [
+                'label' => false,
             ])
             ->add('status', EntityType::class, [
                 'class' => EventStatus::class,
@@ -60,7 +56,7 @@ class CreateEventFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Event::class, // Set the related entity
+            'data_class' => Event::class,
         ]);
     }
 }
