@@ -7,6 +7,7 @@ use App\Repository\LocationRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\UX\Map\InfoWindow;
 use Symfony\UX\Map\Map;
 use Symfony\UX\Map\Marker;
@@ -15,6 +16,7 @@ use Symfony\UX\Map\Point;
 final class HomeController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
+    #[IsGranted("ROLE_USER")]
     public function index(LocationRepository $locationRepository): Response
     {
         $locations = $locationRepository->findAll();

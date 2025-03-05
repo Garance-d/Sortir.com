@@ -1,3 +1,5 @@
+parameters:
+    app.jwtsecret: '%env(JWT_SECRET)%'
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -12,6 +14,8 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+
+
 
     App\Listener\EventListener:
         arguments:
