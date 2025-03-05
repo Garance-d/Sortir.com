@@ -3,6 +3,7 @@
 namespace App\Listener;
 
 use App\Repository\EventStatusRepository;
+use DateInterval;
 use Doctrine\ORM\Event\PostLoadEventArgs;
 use App\Entity\Event;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,8 +17,14 @@ class EventListener
 
     public function postLoad(Event $event, PostLoadEventArgs $args): void
     {
+        // Vérifier si le statut est 6, auquel cas on ne fait rien
+        if ($event->getStatus() && $event->getStatus()->getId() === 6) {
+            return;
+        }
+
         $eventDuration = $event->getDuration(); // Durée en minutes
         $currentDate = new \DateTime(); // Aujourd'hui
+        $currentDate->add(new DateInterval('PT1H')); // Ajoute 1 heure
 
         // Créer une copie de la date de début pour ne pas modifier l'original
         $startDate = clone $event->getStartAt();
@@ -42,6 +49,6 @@ class EventListener
         }
 
         $this->entityManager->persist($event);
-//        $this->entityManager->flush();
+        $this->entityManager->flush();
     }
 }

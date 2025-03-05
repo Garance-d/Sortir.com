@@ -7,6 +7,7 @@
     <ul class="list-group list-group-flush">
 
         <li class="name-event">Nom de la sortie: {{ event.name }}</li>
+        <li class="status-event">Etat de la sortie: {{ event.status.label }}</li>
         <li class="date-hours-event">Date et heure de la sortie: {{ event.startAt |date('d/m/Y') }}</li>
         <li class="date-limit-inscription">Date limite d'inscription: {{ event.registrationEndsAt |date('d/m/Y') }}</li>
         <li class="nbr-place">Nombre de places: {{ event.maxUsers }}</li>
@@ -39,9 +40,12 @@
     <div>
         {{ ux_map(map, { style: 'height: 300px;' }) }}
     </div>
-    <div>
-        <a href="{{ path('app_event_join', {'id': event.id, 'idUser': app.user.id}) }}" class="button">Join</a>
-        <a href="{{ path('app_event_quit', {'id': event.id, 'idUser': app.user.id}) }}" class="button">Quit</a>
-    </div>
+    {% if user is defined %}
+        <div>
+            <a href="{{ path('app_event_join', {'id': event.id, 'idUser': app.user.id}) }}" class="button">Join</a>
+            <a href="{{ path('app_event_quit', {'id': event.id, 'idUser': app.user.id}) }}" class="button">Quit</a>
+            <a href="{{ path('app_event_cancel', {'id': event.id, 'idUser': app.user.id}) }}" class="button">Cancel</a>
+        </div>
+    {% endif %}
 
 {% endblock %}

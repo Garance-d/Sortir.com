@@ -24,6 +24,7 @@ class Event
 
     #[ORM\Column]
     #[Assert\NotNull]
+    #[Assert\GreaterThanOrEqual('today', message: "La date ne peut pas être antérieure à aujourd'hui.")]
     private ?\DateTimeImmutable $startAt = null;
 
     #[ORM\Column]

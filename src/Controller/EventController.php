@@ -19,6 +19,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\UX\Map\InfoWindow;
 use Symfony\UX\Map\Map;
 use Symfony\UX\Map\Marker;
@@ -248,10 +249,40 @@ final class EventController extends AbstractController
     #[Route('/event/{id}/delete', name: 'app_event_delete', methods: ['POST'])]
     public function delete(Request $request, Event $event, EntityManagerInterface $entityManager): Response
     {
-        // Vérification du token CSRF pour éviter les suppressions non sécurisées
-        if ($this->isCsrfTokenValid('delete'.$event->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($event);
+        $host = $event->getHost();
+
+        if ($this->isCsrfTokenValid('delete' . $event->getId(), $request->request->get('_token'))) {
+            if ($host->getId() == $this->getUser()->getId() || $this->isGranted('ROLE_ADMIN')) {
+                // Vérification du token CSRF pour éviter les suppressions non sécurisées
+
+                $entityManager->remove($event);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'L\'événement a été supprimé.');
+
+            } else {
+                $this->addFlash('error', 'Vous n\'êtes pas habilité à supprimer cet événement.');
+            }
+        }
+
+        return $this->redirectToRoute('app_event');
+    }
+
+    #[Route('/event/{id}/cancel', name: 'app_event_cancel', requirements: ['idEvent' => '\d+'])]
+    #[IsGranted('ROLE_ADMIN', message: 'Vous n\'êtes pas autorisé à annuler cet événement.')]
+    public function cancel(Request $request, Event $event, EntityManagerInterface $entityManager): Response
+    {
+        $host = $event->getHost();
+
+        if ($host->getId() == $this->getUser()->getId() || $this->isGranted('ROLE_ADMIN')) {
+            $status = $entityManager->getRepository(EventStatus::class)->find(6);
+            $event->setStatus($status);
+            $entityManager->persist($event);
             $entityManager->flush();
+
+            $this->addFlash('success', 'L\'événement a été annulé.');
+        } else {
+            $this->addFlash('error', 'Vous n\'êtes pas habilité à annuler cet événement.');
         }
 
         return $this->redirectToRoute('app_event');
