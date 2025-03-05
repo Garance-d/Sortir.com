@@ -17,7 +17,7 @@ final class EventController extends AbstractController
     {
         $events = $entityManager->getRepository(Event::class)->findAll();
 
-        return $this->render('event/index.html.twig', [
+        return $this->render('event/chat.html.twig', [
             'events' => $events,
         ]);
     }
