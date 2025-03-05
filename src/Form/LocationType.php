@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Location;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -14,12 +15,18 @@ class LocationType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'Place (City, Street, etc.)',
+                'label' => 'Nom du lieu',
             ])
-            ->add('street')
-            ->add('latitude')
-            ->add('longitude')
-        ;
+            ->add('street', TextType::class, [
+                'label' => 'Adresse',
+                'attr' => ['id' => 'address', 'placeholder' => 'Saisissez une adresse']
+            ])
+            ->add('latitude', HiddenType::class, [
+                'attr' => ['id' => 'latitude']
+            ])
+            ->add('longitude', HiddenType::class, [
+                'attr' => ['id' => 'longitude']
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

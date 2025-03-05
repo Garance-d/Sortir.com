@@ -33,6 +33,9 @@ class Location
     #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'location')]
     private Collection $events;
 
+//    #[ORM\ManyToOne(inversedBy: 'locations')]
+//    private ?City $city = null;
+
     public function __construct()
     {
         $this->events = new ArrayCollection();
@@ -117,6 +120,18 @@ class Location
                 $event->setLocation(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCity(): ?City
+    {
+        return $this->city;
+    }
+
+    public function setCity(?City $city): static
+    {
+        $this->city = $city;
 
         return $this;
     }

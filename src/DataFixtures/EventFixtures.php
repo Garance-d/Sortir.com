@@ -26,7 +26,7 @@ class EventFixtures extends Fixture
         $faker = \Faker\Factory::create('fr_FR');
 
         $statuses = [];
-        $statusLabels = ['En attente', 'Confirmé', 'Annulé'];
+        $statusLabels = ['Créée', 'Ouverte', 'Clôturée', 'Activité en cours', 'passée', 'Annulée'];
 
         foreach ($statusLabels as $label) {
             $status = new EventStatus();

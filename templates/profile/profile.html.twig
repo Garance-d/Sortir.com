@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Update{% endblock %}
+
+{% block body %}
+        <div class="profile_structure">
+
+            {% if app.user.id == profile_id %}
+                <h1>Mon profil :</h1>
+
+                <ul>
+                    <li><strong>Nom : </strong> {{ user.lastName }}</li>
+                    <li><strong>Prénom : </strong> {{ user.firstName }}</li>
+                    <li><strong>Pseudo : </strong> {{ user.username }}</li>
+                    <li><strong>Email : </strong> {{ user.email }}</li>
+                    <li><strong>Téléphone : </strong> {{ user.phone }}</li>
+                    <li><strong>Campus : </strong> {{ user.campus.name }}</li>
+                </ul>
+                <a href="{{ path('app_update', {'id': app.user.id}) }}" class="button">Modifier</a>
+
+            {% endif %}
+
+            {% if app.user.id != profile_id %}
+                <h1>Profil de {{ user.firstName }} :</h1>
+
+                <ul>
+                    <li><strong>Nom : </strong> {{ user.lastName }}</li>
+                    <li><strong>Prénom : </strong> {{ user.firstName }}</li>
+                    <li><strong>Pseudo : </strong> {{ user.username }}</li>
+                    <li><strong>Email : </strong> {{ user.email }}</li>
+                    <li><strong>Campus : </strong> {{ user.campus.name }}</li>
+                </ul>
+            {% endif %}
+        </div>
+{% endblock %}

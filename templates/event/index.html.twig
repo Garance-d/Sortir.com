@@ -20,6 +20,7 @@
                         <th>Nom</th>
                         <th>Date de début</th>
                         <th>Fin des inscriptions</th>
+                        <th>Durée</th>
                         <th>Participants</th>
                         <th>Description</th>
                         <th>Adresse</th>
@@ -34,6 +35,7 @@
                             <td><a href="{{ path('app_event_show', {'id': event.id}) }}">{{ event.name }}</a></td>
                             <td>{{ event.startAt|date('d/m/Y') }}</td>
                             <td>{{ event.registrationEndsAt|date('d/m/Y') }}</td>
+                            <td>{{ event.duration }}</td>
                             <td>{{ event.getUserCount() }}/{{ event.maxUsers }}</td>
                             <td>{{ event.description }}</td>
                             <td>{{ event.location.street }}</td>

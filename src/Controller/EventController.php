@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 use App\Entity\Event;
+use App\Entity\EventStatus;
 use App\Entity\Filter;
 use App\Entity\Location;
 use App\Entity\User;
@@ -103,24 +104,43 @@ final class EventController extends AbstractController
     #[Route('/create/{id}', name: 'app_event_create', requirements: ['id' => '\d+'])]
     public function createEvent(int $id, Request $request, EntityManagerInterface $entityManager): Response
     {
+
         $event = new Event();
         $currentUser = $entityManager->getRepository(User::class)->find($id);
+        $status = $entityManager->getRepository(EventStatus::class)->find(1);
 
         $event->setHost($currentUser);
+        $event->setStatus($status);
 
         $form = $this->createForm(CreateEventFormType::class, $event);
         $form->handleRequest($request);
 
+        // Instancie la carte
+        $map = (new Map())
+            ->fitBoundsToMarkers();
+
         if ($form->isSubmitted() && $form->isValid()) {
+            $location = new Location();
+            $location->setLatitude($request->request->get('latitude'));
+            $location->setLongitude($request->request->get('longitude'));
+            $locationData = $form->get('location')->getData();
+            $location->setName($locationData->getName());
+            $location->setStreet($locationData->getStreet());
+            $event->setLocation($location);
+
+            $entityManager->persist($location);
             $entityManager->persist($event);
             $entityManager->flush();
 
             return $this->redirectToRoute('app_event');
         }
+
         return $this->render('event/create.html.twig', [
-            'createEventForm' => $form,
+            'createEventForm' => $form->createView(),
+            'map' => $map,
         ]);
     }
+
 
     #[Route('/event/{id}', name: 'app_event_show')]
     public function show(Event $event, EntityManagerInterface $entityManager): Response
@@ -130,6 +150,7 @@ final class EventController extends AbstractController
         $location = $event->getLocation();
         $map = (new Map())
             ->fitBoundsToMarkers();
+
         $map->addMarker(new Marker(
             position: new Point($location->getLatitude(), $location->getLongitude()),
             title: $location->getName(),
@@ -145,6 +166,7 @@ final class EventController extends AbstractController
                 'icon_mask_url' => 'https://maps.gstatic.com/mapfiles/place_api/icons/v2/tree_pinlet.svg',
             ],
         ));
+
         return $this->render('event/show.html.twig', [
             'event' => $event,
             'map' => $map,

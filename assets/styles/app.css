@@ -12,11 +12,11 @@ nav li {
     margin-right: 1rem;
 }
 
-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+/*.container {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+/*}*/
 
 /* Style pour les labels à droite */
 .form-group {
@@ -50,4 +50,32 @@ container {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     background-color: #fff;
     margin-top: 30px;
+}
+
+#map {
+    width: 100%;
+    height: 100px; /* Ajuste selon ton design */
+}
+
+.autocomplete-list {
+    position: absolute;
+    z-index: 1000;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    max-height: 200px;
+    overflow-y: auto;
+    width: 100%;
+    margin-left: 100px;
+    padding: 0;
+    list-style-type: none;
+}
+
+.autocomplete-list li {
+    padding: 8px;
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+}
+
+.autocomplete-list li:hover {
+    background-color: #f0f0f0;
 }

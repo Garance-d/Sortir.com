@@ -107,7 +107,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Event>
      */
-    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'Host')]
+    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'host')]
     private Collection $eventsHost;
 
     public function __construct()

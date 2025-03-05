@@ -4,14 +4,31 @@
 
 {% block body %}
     <div class="form-container">
-        <div class="form-card">
-            <h1>Create</h1>
+    <div class="form-card">
+        <h1>Create</h1>
 
-            {{ form_errors(createEventForm) }}
+        {{ form_errors(createEventForm) }}
 
-            {{ form_start(createEventForm) }}
+        {{ form_start(createEventForm) }}
 
-            {{ form_widget(createEventForm) }}
+        {{ form_row(createEventForm.name) }}
+        {{ form_row(createEventForm.description) }}
+        {{ form_row(createEventForm.startAt) }}
+        {{ form_row(createEventForm.registrationEndsAt) }}
+        {{ form_row(createEventForm.duration) }}
+        {{ form_row(createEventForm.maxUsers) }}
+
+        {{ form_row(createEventForm.location.name) }}
+        {{ form_row(createEventForm.location.street) }}
+
+        <div id="map" style="height: 400px;">
+            {{ ux_map(map, { style: 'height: 400px;' }) }}
+        </div>
+
+        <div>
+            <input type="text" id="latitude" name="latitude" value="{{ event.location.latitude ?? '' }}" readonly>
+            <input type="text" id="longitude" name="longitude" value="{{ event.location.longitude ?? '' }}" readonly>
+        </div>
 
             {{ form_end(createEventForm) }}
         </div>

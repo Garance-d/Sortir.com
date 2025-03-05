@@ -19,6 +19,3 @@ return [
     Symfony\UX\Map\UXMapBundle::class => ['all' => true],
     Symfony\Bundle\MercureBundle\MercureBundle::class => ['all' => true],
 ];
-
-
-

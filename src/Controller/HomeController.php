@@ -17,24 +17,24 @@ final class HomeController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function index(LocationRepository $locationRepository): Response
     {
-                $locations = $locationRepository->findAll();
+        $locations = $locationRepository->findAll();
         $map = (new Map())
             ->fitBoundsToMarkers();
         foreach ($locations as $location) {
-        $map->addMarker(new Marker(
-            position: new Point($location->getLatitude(), $location->getLongitude()),
-            title: $location->getName(),
-            infoWindow: new InfoWindow(
-                content: $location->getStreet(),
+            $map->addMarker(new Marker(
+                position: new Point($location->getLatitude(), $location->getLongitude()),
+                title: $location->getName(),
+                infoWindow: new InfoWindow(
+                    content: $location->getStreet(),
+                    extra: [
+                        'num_items' => 3,
+                        'includes_link' => true,
+                    ],
+                ),
                 extra: [
-                    'num_items' => 3,
-                    'includes_link' => true,
+                    'icon_mask_url' => 'https://maps.gstatic.com/mapfiles/place_api/icons/v2/tree_pinlet.svg',
                 ],
-            ),
-            extra: [
-                'icon_mask_url' => 'https://maps.gstatic.com/mapfiles/place_api/icons/v2/tree_pinlet.svg',
-            ],
-        ));
+            ));
         }
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
