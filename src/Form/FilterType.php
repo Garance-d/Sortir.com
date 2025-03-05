@@ -17,6 +17,8 @@ class FilterType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $user = $options['user'];
+
         $builder
             ->add('campus', EntityType::class, [
                 'class' => Campus::class,
@@ -42,18 +44,20 @@ class FilterType extends AbstractType
             ->add('eventCheckbHost', CheckboxType::class, [
                 'label' => 'Événements pour lesquels je suis l\'organisateur.rice',
                 'required' => false,
-            ])
-            ->add('eventCheckbArchive', CheckboxType::class, [
+            ]);
+        if ($user && in_array('ROLE_ADMIN', $user->getRoles())) {
+            $builder->add('eventCheckbArchive', CheckboxType::class, [
                 'label' => 'Événements archivés',
                 'required' => false,
             ]);
+        }
     }
     public function configureOptions(OptionsResolver $resolver) : void {
 
         $resolver->setDefaults([
             'data_class' => null,
             'method' => 'GET',
-            // 'csrf_protection' => false
+            'user' => null,
         ]);
     }
 }
