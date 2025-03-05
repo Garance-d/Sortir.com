@@ -147,7 +147,7 @@ class RegistrationController extends AbstractController
             // Rediriger vers la page de connexion ou autre page après mise à jour
             return $this->redirectToRoute('app_login');
         }
-        return $this->render('registration/update.html.twig', [
+        return $this->render('profile/update.html.twig', [
             'registrationForm' => $form->createView(),
         ]);
     }
