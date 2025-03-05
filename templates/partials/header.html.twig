@@ -10,7 +10,7 @@
             <div class="navbar-nav">
                 {% if app.user is not null %}
                     <a class="nav-item nav-link " href="{{ path('app_event') }}">Sorties</a>
-                    <a class="nav-item nav-link " href="{{ path('app_event_create') }}">Créer une sortie</a>
+                    <a class="nav-item nav-link " href="{{ path('app_event_create', {'id': app.user.id }) }}">Créer une sortie</a>
                     <a class="nav-item nav-link " href="{{ path('app_profile', {'id': app.user.id }) }}">Profil</a>
                     <a class="nav-item nav-link " href="{{ path('app_logout') }}">Déconnexion</a>
                     {%  else %}

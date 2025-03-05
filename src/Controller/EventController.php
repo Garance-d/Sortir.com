@@ -107,7 +107,7 @@ final class EventController extends AbstractController
             $events = $queryBuilder->getQuery()->getResult();
         }
 
-        return $this->render('event/chat.html.twig', [
+        return $this->render('event/index.html.twig', [
             'events' => $events,
             'filterForm' => $form->createView(),
         ]);
@@ -120,10 +120,6 @@ final class EventController extends AbstractController
         $currentUser = $entityManager->getRepository(User::class)->find($id);
 
         $event->setHost($currentUser);
-
-        if ($event->getStatus()=== null) {
-            $event ->setStatus('OPEN');
-        }
 
         $form = $this->createForm(CreateEventFormType::class, $event);
         $form->handleRequest($request);
@@ -191,7 +187,6 @@ final class EventController extends AbstractController
                 ],
 
             ));
-        }
 
         return $this->render('event/show.html.twig', [
             'event' => $event,
