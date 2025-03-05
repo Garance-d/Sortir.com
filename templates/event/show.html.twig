@@ -40,12 +40,15 @@
     <div>
         {{ ux_map(map, { style: 'height: 300px;' }) }}
     </div>
-    {% if user is defined %}
+    {% if app.user is defined %}
         <div>
             <a href="{{ path('app_event_join', {'id': event.id, 'idUser': app.user.id}) }}" class="button">Join</a>
             <a href="{{ path('app_event_quit', {'id': event.id, 'idUser': app.user.id}) }}" class="button">Quit</a>
-            <a href="{{ path('app_event_cancel', {'id': event.id, 'idUser': app.user.id}) }}" class="button">Cancel</a>
         </div>
+        {% if app.user and (app.user.id == event.host.id or 'ROLE_ADMIN' in app.user.roles) %}
+            <a href="{{ path('app_event_cancel', {'id': event.id, 'idUser': app.user.id}) }}" class="button">Cancel</a>
+        {% endif %}
+
     {% endif %}
 
 {% endblock %}

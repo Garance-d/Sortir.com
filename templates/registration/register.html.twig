@@ -1,13 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Inscription{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}
 
 {% block body %}
     <div class="form-container">
         <div class="form-card">
-            <h1>Register</h1>
+            <h1>Inscription</h1>
 
-            {{ form_errors(registrationForm) }}
+        {% if registrationForm.vars.errors|length > 0 %}
+            <div class="alert">
+                {{ form_errors(registrationForm) }}
+            </div>
+        {% endif %}
 
             {{ form_start(registrationForm) }}
 

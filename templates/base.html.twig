@@ -17,6 +17,11 @@
     </head>
     <body>
     {% include 'partials/header.html.twig' %}
+    {% for message in app.flashes %}
+        {% for message in message %}
+            <p> {{ message | raw }}</p>
+        {% endfor %}
+    {% endfor %}
 
     <div class="container">
             {% block body %}{% endblock %}
