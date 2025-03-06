@@ -1,31 +1,90 @@
-<nav class="navbar navbar-expand-lg navbar-light ghost-nav">
+<nav class="navbar navbar-expand-lg navbar-dark bg-transparent ghost-nav">
     <a class="navbar-brand" href="{{ path('app_home') }}">
         <img src="{{ asset('img/logo2.png') }}" width="60" height="60" alt="logo">
     </a>
 
-    {% if is_granted('ROLE_ADMIN') %}
-        <a class="navbar-brand" href="{{ path('app_city_index') }}">Villes</a>
-        <a class="navbar-brand" href="{{ path('app_location_index') }}">Lieux</a>
-        <a class="navbar-brand" href="{{ path('app_dashboard') }}">Administrateur</a>
-    {% endif %}
-
-
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+            aria-controls="offcanvasNavbar" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-            <a class="nav-item nav-link" href="{{ path('app_home') }}">Accueil</a>
-            <a class="nav-item nav-link active" href="{{ path('app_event') }}">Événements</a>
-            {% if app.user is not null %}
-                <a class="nav-item nav-link active" href="{{ path('app_event_create', {'id': app.user.id }) }}">Créer un événement</a>
-                <a class="nav-item nav-link" href="{{ path('app_profile', {'id': app.user.id }) }}">Profil</a>
-                <a class="nav-item nav-link " href="{{ path('app_logout') }}">Se déconnecter</a>
-            {%  else %}
-                <a class="nav-item nav-link" href="{{ path('app_login') }}">se connecter</a>
-                <a class="nav-item nav-link" href="{{ path('app_register') }}">S'inscrire</a>
-            {% endif %}
 
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+        <div class="offcanvas-body d-flex flex-column flex-lg-row p-4">
+            <div class="navbar-nav justify-content-center align-items-center fs-5 flex-grow-1 pe-3">
+                <a class="nav-item nav-link mx-2" href="{{ path('app_home') }}">Accueil</a>
+                <a class="nav-item nav-link active mx-2" href="{{ path('app_event') }}">Événements</a>
+                {% if app.user is not null %}
+                    <a class="nav-item nav-link active mx-2" href="{{ path('app_event_create', {'id': app.user.id }) }}">Créer un événement</a>
+                    <a class="nav-item nav-link mx-2" href="{{ path('app_profile', {'id': app.user.id }) }}">Profil</a>
+                    <a class="nav-item nav-link mx-2" href="{{ path('app_logout') }}">Se déconnecter</a>
+                {% else %}
+                    <a class="nav-item nav-link mx-2" href="{{ path('app_login') }}">Se connecter</a>
+                    <a class="nav-item nav-link mx-2" href="{{ path('app_register') }}">S'inscrire</a>
+                {% endif %}
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a class="nav-item nav-link mx-2" href="{{ path('app_city_index') }}">Villes</a>
+                    <a class="nav-item nav-link mx-2" href="{{ path('app_location_index') }}">Lieux</a>
+                    <a class="nav-item nav-link mx-2" href="{{ path('app_dashboard') }}">Administrateur</a>
+                {% endif %}
+            </div>
         </div>
     </div>
 </nav>
+
+
+{#<nav class="navbar navbar-expand-lg navbar-dark bg-transparent ghost-nav">#}
+{#    <div class="container">#}
+{#        <img src="{{ asset('img/logo2.png') }}" href="{{ path('app_home') }}" width="60" height="60" alt="logo chausssure">#}
+{#        <!-- button -->#}
+{#        <button class="navbar-toggler " type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">#}
+{#            <span class="navbar-toggler-icon"></span>#}
+{#        </button>#}
+{#        <!-- sidebar -->#}
+{#        <div class="sidebar offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">#}
+
+{#            <!-- sidebar body -->#}
+{#            <div class=" offcanvas-body d-flex flex-column flex-lg-row p-4">#}
+{#                <ul class="navbar-nav justify-content-center align-items-center fs-5 flex-grow-1 pe-3">#}
+{#                    <li class="nav-item mx-2">#}
+{#                        <a class="nav-item nav-link" href="{{ path('app_home') }}">Accueil</a>#}
+{#                    </li>#}
+{#                    <li class="nav-item mx-2">#}
+{#                        <a class="nav-item nav-link active" href="{{ path('app_event') }}">Sorties</a>#}
+{#                    </li>#}
+{#                    {% if app.user is not null %}#}
+
+{#                        <li class="nav-item mx-2">#}
+{#                            <a class="nav-item nav-link active" href="{{ path('app_event_create', {'id': app.user.id }) }}">Créer une sortie</a>#}
+{#                        </li>#}
+{#                        <li class="nav-item mx-2">#}
+{#                            <a class="nav-item nav-link" href="{{ path('app_profile', {'id': app.user.id }) }}">Profile</a>#}
+{#                        </li>#}
+{#                        <li class="nav-item mx-2">#}
+{#                            <a class="nav-item nav-link " href="{{ path('app_logout') }}">Déconnexion</a>#}
+{#                        </li>#}
+{#                    {%  else %}#}
+{#                        <li class="nav-item mx-2">#}
+{#                            <a class="nav-item nav-link"#}
+{#                               href="{{ path('app_login') }}">Se connecter</a>#}
+{#                        </li>#}
+{#                        <li class="nav-item mx-2">#}
+{#                            <a class="nav-item nav-link"#}
+{#                               href="{{ path('app_register') }}">S'incrire</a>#}
+{#                        </li>#}
+{#                    {% endif %}#}
+{#                    {% if is_granted('ROLE_ADMIN') %}#}
+{#                        <li class="nav-item mx-2">#}
+{#                            <a class="nav-item nav-link" href="{{ path('app_city_index') }}">Villes</a>#}
+{#                        </li>#}
+{#                        <li class="nav-item mx-2">#}
+{#                            <a class="nav-item nav-link" href="{{ path('app_location_index') }}">Lieux</a>#}
+{#                        </li>#}
+{#                        <li class="nav-item mx-2">#}
+{#                            <a class="nav-item nav-link" href="{{ path('app_dashboard') }}">Administrateur</a>#}
+{#                        </li>#}
+{#                    {% endif %}#}
+{#                </ul>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{#</nav>#}

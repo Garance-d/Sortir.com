@@ -25,7 +25,7 @@
                         <th>Fin des inscriptions</th>
                         <th>Durée</th>
                         <th>Participants</th>
-                        <th>Description</th>
+{#                        <th>Description</th>#}
                         <th>Adresse</th>
                         <th>Statut</th>
                         <th>Organisateur</th>
@@ -40,7 +40,7 @@
                             <td>{{ event.registrationEndsAt|date('d/m/Y') }}</td>
                             <td>{{ event.duration }}</td>
                             <td>{{ event.getUserCount() }}/{{ event.maxUsers }}</td>
-                            <td>{{ event.description }}</td>
+{#                            <td>{{ event.description }}</td>#}
                             <td>{{ event.location.street }}</td>
                             <td>{{ event.status.label }}</td>
                             <td>

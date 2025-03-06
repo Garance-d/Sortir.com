@@ -3,11 +3,13 @@
 {% block title %}Détail d'un évènement{% endblock %}
 
 {% block body %}
+    <div class="form-container">
+        <div class="form-card">
+            <h1>Modifier l'événement</h1>
 
-<h1>Modifier l'événement</h1>
-
-    {{ form_start(editEventForm) }}
-    {{ form_widget(editEventForm) }}
-    {{ form_end(editEventForm) }}
-
+            {{ form_start(editEventForm) }}
+            {{ form_widget(editEventForm) }}
+            {{ form_end(editEventForm) }}
+        </div>
+    </div>
 {% endblock %}
