@@ -9,7 +9,7 @@
                 {% if app.user.profilePicture %}
                     <img src="{{ asset('uploads/profile_pictures/' ~ app.user.profilePicture) }}" alt="Photo de profil" class="profile_picture img" />
                 {% else %}
-                    <p><img src="{{ asset('img/default-profile.png') }}" alt="Photo de profil" class="profile_picture" /></p>
+                    <p><img src="{{ asset('img/default-profile.png') }}" alt="Photo de profil" class="profile_picture img" /></p>
                 {% endif %}
                 <h1>Mon profil :</h1>
                 <ul>
@@ -24,7 +24,7 @@
             {% endif %}
             {% if app.user.id != profile_id %}
                 {% if user.profilePicture %}
-                    <img src="{{ asset('=uploads/profile_pictures/' ~ user.profilePicture) }}" alt="Photo de profil" />
+                    <img src="{{ asset('=uploads/profile_pictures/' ~ user.profilePicture) }}" alt="Photo de profil" class="profile_picture img" />
                 {% else %}
                     <p><img src="{{ asset('img/default-profile.png') }}" alt="Photo de profil" /></p>
                 {% endif %}

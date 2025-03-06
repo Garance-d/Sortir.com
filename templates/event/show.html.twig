@@ -3,52 +3,57 @@
 {% block title %}Détail d'un évènement{% endblock %}
 
 {% block body %}
+    <div class="form-container">
+        <div class="form-card">
+            <ul class="list-group list-group-flush">
 
-    <ul class="list-group list-group-flush">
+                <li class="name-event">Nom de la sortie: {{ event.name }}</li>
+                <li class="status-event">Etat de la sortie: {{ event.status.label }}</li>
+                <li class="date-hours-event">Date et heure de la sortie: {{ event.startAt |date('d/m/Y') }}</li>
+                <li class="date-limit-inscription">Date limite
+                    d'inscription: {{ event.registrationEndsAt |date('d/m/Y') }}</li>
+                <li class="nbr-place">Nombre de places: {{ event.maxUsers }}</li>
 
-        <li class="name-event">Nom de la sortie: {{ event.name }}</li>
-        <li class="status-event">Etat de la sortie: {{ event.status.label }}</li>
-        <li class="date-hours-event">Date et heure de la sortie: {{ event.startAt |date('d/m/Y') }}</li>
-        <li class="date-limit-inscription">Date limite d'inscription: {{ event.registrationEndsAt |date('d/m/Y') }}</li>
-        <li class="nbr-place">Nombre de places: {{ event.maxUsers }}</li>
+                {% for user in event.users %}
+                    <li class="participants">Participants: {{ user.username }}</li>
+                {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center">Aucun participant.</td>
+                    </tr>
+                {% endfor %}
 
-        {% for user in event.users %}
-            <li class="participants">Participants: {{ user.username }}</li>
-        {% else %}
-            <tr>
-                <td colspan="8" class="text-center">Aucun participant.</td>
-            </tr>
-        {% endfor %}
+                <li class="duration">Durée: {{ event.duration }}</li>
+                <li class="customers">
+                    {% if event.getUserCount() == event.maxUsers %}
+                        <p>Complet</p>
+                    {% else %}
+                        Nombre de participants {{ event.getUserCount() }}/{{ event.maxUsers }}
+                    {% endif %}
+                </li>
 
-        <li class="duration">Durée: {{ event.duration }}</li>
-        <li class="customers">
-            {% if event.getUserCount() == event.maxUsers %}
-                <p>Complet</p>
-            {% else %}
-                Nombre de participants {{ event.getUserCount() }}/{{ event.maxUsers }}
+                <li class="description">Description et info : {{ event.description }}</li>
+                {% if event.host.username is defined and event.host.username is not empty %}
+                    <li class="host">Organisateur : {{ event.host.username }}</li>
+                {% endif %}
+
+                <li class="place">Lieu : {{ location.name }}</li>
+                <li class="street">Rue : {{ location.street }}</li>
+            </ul>
+            <div>
+                {{ ux_map(map, { style: 'height: 300px;' }) }}
+            </div>
+            {% if app.user is defined %}
+                <div>
+                    <a href="{{ path('app_event_join', {'id': event.id, 'idUser': app.user.id}) }}"
+                       class="button">Join</a>
+                    <a href="{{ path('app_event_quit', {'id': event.id, 'idUser': app.user.id}) }}"
+                       class="button">Quit</a>
+                </div>
+                {% if app.user and (event.host is not null and (app.user.id == event.host.id or 'ROLE_ADMIN' in app.user.roles)) %}
+                    <a href="{{ path('app_event_cancel', {'id': event.id, 'idUser': app.user.id}) }}" class="button">Cancel</a>
+                {% endif %}
+
             {% endif %}
-        </li>
-
-        <li class="description">Description et info : {{ event.description }}</li>
-        {% if event.host.username is defined and event.host.username is not empty %}
-            <li class="host">Organisateur : {{ event.host.username }}</li>
-        {% endif %}
-
-        <li class="place">Lieu : {{ location.name }}</li>
-        <li class="street">Rue : {{ location.street }}</li>
-    </ul>
-    <div>
-        {{ ux_map(map, { style: 'height: 300px;' }) }}
-    </div>
-    {% if app.user is defined %}
-        <div>
-            <a href="{{ path('app_event_join', {'id': event.id, 'idUser': app.user.id}) }}" class="button">Join</a>
-            <a href="{{ path('app_event_quit', {'id': event.id, 'idUser': app.user.id}) }}" class="button">Quit</a>
         </div>
-        {% if app.user and (event.host is not null and (app.user.id == event.host.id or 'ROLE_ADMIN' in app.user.roles)) %}
-            <a href="{{ path('app_event_cancel', {'id': event.id, 'idUser': app.user.id}) }}" class="button">Cancel</a>
-        {% endif %}
-
-    {% endif %}
-
+    </div>
 {% endblock %}

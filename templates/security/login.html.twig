@@ -7,46 +7,42 @@
 {% endblock %}
 
 {% block body %}
-    <div class="container">
-        {% if app.user %}
-            <div class="mb-3">
-                <h1>Vous êtes connecté</h1>
-                <p>Bienvenue, {{ app.user.firstName }} {{ app.user.lastName }} !</p>
-                <a href="{{ path('app_logout') }}" class="btn btn-lg btn-primary">Se déconnecter</a>
-            </div>
-        {% else %}
-            <div class="alert">
-                🔒 Vous devez être connecté pour consulter la liste des sorties prévues.
-            </div>
-
-            <form method="post">
-                {% if error %}
-                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-                {% endif %}
-
-                <h1>Connectez-vous</h1>
-                <label for="inputEmail">Email</label>
-                <input type="email" value="{{ last_username }}" name="email" id="inputEmail" required autofocus>
-                <label for="inputPassword">Mot de passe</label>
-                <input type="password" name="password" id="inputPassword" required>
-
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
-                <div class="checkbox">
-                    <input type="checkbox" name="_remember_me"> Souvenir de moi
+    <div class="form-container">
+        <div class="form-card">
+            {% if app.user %}
+                <div class="mb-3">
+                    <h1>Vous êtes connecté</h1>
+                    <p>Bienvenue, {{ app.user.firstName }} {{ app.user.lastName }} !</p>
+                    <a href="{{ path('app_logout') }}" class="btn btn-lg btn-primary">Se déconnecter</a>
                 </div>
-
-                <button type="submit">Connexion</button>
-
-                <p>
-                    Pas encore de compte ?
-                    <a href="{{ path('app_register') }}">Inscrivez-vous</a>
-                </p>
-                <p>
-                    Mot de passe oublié ?
-                    <a href="{{ path('app_forgot_password_request') }}">Réinitialiser </a>
-                </p>
-            </form>
-        {% endif %}
+            {% else %}
+                <div class="alert">
+                    🔒 Vous devez être connecté pour consulter la liste des sorties prévues.
+                </div>
+                <form method="post">
+                    {% if error %}
+                        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                    {% endif %}
+                    <h1>Connectez-vous</h1>
+                    <label for="inputEmail">Email</label>
+                    <input type="email" value="{{ last_username }}" name="email" id="inputEmail" required autofocus>
+                    <label for="inputPassword">Mot de passe</label>
+                    <input type="password" name="password" id="inputPassword" required>
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                    <div class="checkbox">
+                        <input type="checkbox" name="_remember_me"> Souvenir de moi
+                    </div>
+                    <button type="submit">Connexion</button>
+                    <p>
+                        Pas encore de compte ?
+                        <a href="{{ path('app_register') }}">Inscrivez-vous</a>
+                    </p>
+                    <p>
+                        Mot de passe oublié ?
+                        <a href="{{ path('app_forgot_password_request') }}">Réinitialiser </a>
+                    </p>
+                </form>
+            {% endif %}
+        </div>
     </div>
 {% endblock %}
