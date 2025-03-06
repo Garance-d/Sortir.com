@@ -33,7 +33,7 @@ class RegistrationController extends AbstractController
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
             $user->setAdministrator(false);
             $user->setRoles(['ROLE_USER']);
-            $user->setActive(true);
+            $user->setActive(false);
             $profilePicture = $form->get('profilePicture')->getData();
             if ($profilePicture) {
                 // Génère un nouveau nom pour la photo de profil
@@ -56,7 +56,6 @@ class RegistrationController extends AbstractController
                     $this->addFlash('error', 'Il y a eu un problème lors de l\'upload de votre photo de profil.');
                     return $this->redirectToRoute('register');
                 }
-
                 // Met à jour le chemin de l'image dans la base de données
                 $user->setProfilePicture($newFilename);
             }
@@ -70,11 +69,15 @@ class RegistrationController extends AbstractController
                 'user_id' => $user->getId()
             ];
             $token = $jwt->generate($header, $payload, $this->getParameter('app.jwtsecret'));
+            $expiration = new \DateTime('+3 hour'); // Expiration dans 1 heure
+            $user->setConfirmationToken($token);
+            $user->setConfirmationTokenExpiresAt($expiration);
+            $entityManager->flush(); // Met à jour en base
             $mailerService->sendConfirmationEmail(
                 'no-reply@sortir.com',
                 $user->getEmail(),
                 'Activation de votre compte sur Sortir.com',
-                'confirmation', // Correspond au fichier email/confirmation.html.twig
+                'confirmation',
                 ['user' => $user, 'token' => $token] // Contexte sous forme de tableau
             );
             $this->addFlash('success', 'Un e-mail de confirmation a été envoyé. Veuillez vérifier votre boîte mail.');
