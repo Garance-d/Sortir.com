@@ -20,7 +20,7 @@
                 <table class="table table-striped">
                     <thead>
                     <tr>
-                        <th >Nom</th>
+                        <th>Nom</th>
                         <th>Date de début</th>
                         <th>Fin des inscriptions</th>
                         <th>Durée</th>
@@ -49,7 +49,10 @@
                                 {% endif %}
                             </td>
                             <td>
-                                <a style="font-size: 24px; border: 1px solid black" href="{{ path('app_event_edit', {'id': event.id}) }}" class="button">Éditer</a>
+                                {% if app.user is not null %}
+                                    <a style="font-size: 24px; border: 1px solid black" href="{{ path('app_event_show', {'id': event.id}) }}">Détail</a>
+                                {% endif %}
+                                <a href="{{ path('app_event_edit', {'id': event.id}) }}" class="button">Éditer</a>
                                 <form method="post" action="{{ path('app_event_delete', {'id': event.id}) }}" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet événement ?');">
                                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ event.id) }}">
                                     <button style="font-size: 24px; border: 1px solid black" type="submit" class="button">Supprimer</button>

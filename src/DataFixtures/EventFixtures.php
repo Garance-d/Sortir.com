@@ -62,7 +62,6 @@ class EventFixtures extends Fixture
             $manager->persist($location);
             $locations[] = $location;
         }
-
         $manager->flush();
 
         $events = [];
@@ -70,16 +69,16 @@ class EventFixtures extends Fixture
             $event = new Event();
             $event->setName($faker->words(3, true));
             $event->setDescription($faker->paragraph());
-            $event->setStartAt(\DateTimeImmutable::createFromMutable($faker->dateTime()));
-            $event->setDuration($faker->numberBetween(30, 60));
-            $event->setRegistrationEndsAt(\DateTimeImmutable::createFromMutable($faker->dateTime()));
+            $startAt = \DateTimeImmutable::createFromMutable($faker->dateTimeBetween('+1 day', '+30 days'));
+            $event->setStartAt($startAt);
+            $duration = $faker->numberBetween(30, 60);
+            $event->setDuration($duration);
+            $registrationEndsAt = $startAt->sub(new \DateInterval('P1D')); // Inscription 1 jour avant l'événement
+            $event->setRegistrationEndsAt($registrationEndsAt);
             $event->setMaxUsers($faker->numberBetween(1, 10));
-
             $event->setStatus($faker->randomElement($statuses));
             $event->setLocation($faker->randomElement($locations));  // Associer un lieu existant
-
             $manager->persist($event);
-
             $this->addReference('event_'.$i, $event);
         }
 
@@ -93,12 +92,11 @@ class EventFixtures extends Fixture
             $user->setPhone($faker->phoneNumber());
             $user->setEmail($faker->email());
             $user->setUsername($faker->userName());
-
             $plainPassword = 'password123'; // Utilise une valeur fixe ou random
-
             $hashedPassword = $this->passwordHasher->hashPassword($user, $plainPassword);
             $user->setPassword($hashedPassword);
             $user->setAdministrator($faker->boolean());
+            $user->setProfilePicture($faker->imageUrl());
             if ($user->isAdministrator() == true) {
                 $user->setRoles(['ROLE_ADMIN']);
             } else {
@@ -107,12 +105,10 @@ class EventFixtures extends Fixture
             $user->setActive(true);
             $campus = $faker->randomElement($campuses); // Prend un campus déjà créé
             $user->setCampus($campus);
-
             // Associer l'utilisateur à un événement aléatoire
             $eventReference = $this->getReference('event_' . $faker->numberBetween(0, 19), Event::class); // Prendre un événement existant
             // Ajouter l'utilisateur à l'événement
             $eventReference->addUser($user); // Exemple d'ajout d'un utilisateur à un événement
-
             $manager->persist($user);
             $users[] = $user;
         }
