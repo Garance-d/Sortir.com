@@ -13,7 +13,7 @@
 
             {% if app.user.profilePicture %}
                 <img src="{{ asset('uploads/profile_pictures/' ~ app.user.profilePicture) }}" alt="Photo de profil" class="profile_picture img" />
-                <a href="{{ path('app_delete_photo', {'id': app.user.id}) }}" class="deletePhoto">Supprimer</a>
+                <a href="{{ path('app_delete_photo', {'id': app.user.id}) }}" class="button">Supprimer</a>
 
             {% else %}
                 {{ form_widget(registrationForm.profilePicture) }}

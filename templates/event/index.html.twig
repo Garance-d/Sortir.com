@@ -35,7 +35,7 @@
                     <tbody>
                     {% for event in events %}
                         <tr>
-                            <td><a href="{{ path('app_event_show', {'id': event.id}) }}">{{ event.name }}</a></td>
+                            <td>{{ event.name }}</td>
                             <td>{{ event.startAt|date('d/m/Y') }}</td>
                             <td>{{ event.registrationEndsAt|date('d/m/Y') }}</td>
                             <td>{{ event.duration }}</td>
@@ -49,6 +49,9 @@
                                 {% endif %}
                             </td>
                             <td>
+                                {% if app.user is not null %}
+                                    <a href="{{ path('app_event_show', {'id': event.id}) }}">Détail</a>
+                                {% endif %}
                                 <a href="{{ path('app_event_edit', {'id': event.id}) }}" class="button">Éditer</a>
                                 <form method="post" action="{{ path('app_event_delete', {'id': event.id}) }}" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet événement ?');">
                                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ event.id) }}">
