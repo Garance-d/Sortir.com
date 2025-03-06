@@ -3,33 +3,23 @@
 
 namespace App\Controller;
 
-use App\Entity\EventStatus;
-use App\Entity\User;
 use App\Entity\Event;
+use App\Entity\EventStatus;
 use App\Entity\Filter;
 use App\Entity\Location;
-
+use App\Entity\User;
 use App\Form\CreateEventFormType;
 use App\Form\FilterType;
 use App\Repository\EventRepository;
 use App\Repository\FilterRepository;
 use App\Repository\LocationRepository;
-use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-
 use EventType;
-
-use phpDocumentor\Reflection\Types\Void_;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\Mailer;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mailer\Transport;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\UX\Map\InfoWindow;
 use Symfony\UX\Map\Map;
 use Symfony\UX\Map\Marker;
@@ -112,54 +102,71 @@ final class EventController extends AbstractController
             'filterForm' => $form->createView(),
         ]);
     }
-
     #[Route('/create/{id}', name: 'app_event_create', requirements: ['id' => '\d+'])]
     public function createEvent(int $id, Request $request, EntityManagerInterface $entityManager): Response
     {
+
         $event = new Event();
         $currentUser = $entityManager->getRepository(User::class)->find($id);
+        $status = $entityManager->getRepository(EventStatus::class)->find(1);
 
         $event->setHost($currentUser);
-
+        $event->setStatus($status);
 
         $form = $this->createForm(CreateEventFormType::class, $event);
         $form->handleRequest($request);
 
+        // Instancie la carte
+        $map = (new Map())
+            ->fitBoundsToMarkers();
+
         if ($form->isSubmitted() && $form->isValid()) {
+            $location = new Location();
+            $location->setLatitude($request->request->get('latitude'));
+            $location->setLongitude($request->request->get('longitude'));
+            $locationData = $form->get('location')->getData();
+            $location->setName($locationData->getName());
+            $location->setStreet($locationData->getStreet());
+            $event->setLocation($location);
+
+            $entityManager->persist($location);
             $entityManager->persist($event);
             $entityManager->flush();
 
             return $this->redirectToRoute('app_event');
         }
+
         return $this->render('event/create.html.twig', [
-            'createEventForm' => $form,
+            'createEventForm' => $form->createView(),
+            'map' => $map,
         ]);
     }
 
-    // Show details events
+
     #[Route('/event/{id}', name: 'app_event_show')]
-    public function show(Event $event,EntityManagerInterface $entityManager): Response
+    public function show(Event $event, EntityManagerInterface $entityManager): Response
     {
         $users = $entityManager->getRepository(User::class)->findAll();
+
         $location = $event->getLocation();
         $map = (new Map())
             ->fitBoundsToMarkers();
 
-            $map->addMarker(new Marker(
-                position: new Point($location->getLatitude(), $location->getLongitude()),
-                title: $location->getName(),
-                infoWindow: new InfoWindow(
-                    headerContent: '<b>' . $event->getName() . '</b>',
-                    content: $location->getStreet(),
-                    extra: [
-                        'num_items' => 3,
-                        'includes_link' => true,
-                    ],
-                ),
+        $map->addMarker(new Marker(
+            position: new Point($location->getLatitude(), $location->getLongitude()),
+            title: $location->getName(),
+            infoWindow: new InfoWindow(
+                headerContent: $event->getName(),
+                content: $location->getStreet(),
                 extra: [
-                    'icon_mask_url' => 'https://maps.gstatic.com/mapfiles/place_api/icons/v2/tree_pinlet.svg',
+                    'num_items' => 3,
+                    'includes_link' => true,
                 ],
-            ));
+            ),
+            extra: [
+                'icon_mask_url' => 'https://maps.gstatic.com/mapfiles/place_api/icons/v2/tree_pinlet.svg',
+            ],
+        ));
 
         return $this->render('event/show.html.twig', [
             'event' => $event,
@@ -228,7 +235,6 @@ final class EventController extends AbstractController
         $form = $this->createForm(CreateEventFormType::class, $event);
         $form->handleRequest($request);
 
-
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
             return $this->redirectToRoute('app_event');
@@ -240,62 +246,46 @@ final class EventController extends AbstractController
         ]);
     }
 
-    // Modify the statue of an event
-//    #[Route('/event/{id}/modify', name: 'app_event_modify')]
-//    public function modify(Request $request, Event $event, EntityManagerInterface $entityManager): Response
-//    {
-//        $status = $entityManager->getRepository(EventStatus::class)->find(1);
-//        $event->setStatus($status);
-//        $entityManager->modify($event);
-//        $entityManager->flush();
-//
-//        if ($status->isSubmitted() && $status->isValid()) {
-//            $status->isUpdated()->getLabel('OPEN');
-//        }
-//        if ($status->isValid()) {
-//            $status->isUpdated()->getLabel('MODIFIED');
-//        }
-//            $status->isRegistrationEndsAt()->getLabel('CLOSED');
-//            $status->isEventCancelled()->getLabel('CANCELLED');
-//            $status->isStartAt()->getLabel('ON GOING');
-//            $status->isEventOver()->getLabel('DONE');
-//
-//        return $this->redirectToRoute('app_event_edit');
-//    }
-
-
-    // Supprimer un événement
-    #[Route('/event/{id}/delete', name: 'app_event_delete')]
+    #[Route('/event/{id}/delete', name: 'app_event_delete', methods: ['POST'])]
     public function delete(Request $request, Event $event, EntityManagerInterface $entityManager): Response
     {
-        // Vérification du token CSRF pour éviter les suppressions non sécurisées
+        $host = $event->getHost();
+
         if ($this->isCsrfTokenValid('delete' . $event->getId(), $request->request->get('_token'))) {
+            if ($host->getId() == $this->getUser()->getId() || $this->isGranted('ROLE_ADMIN')) {
+                // Vérification du token CSRF pour éviter les suppressions non sécurisées
 
-            $entityManager->remove($event);
-            $entityManager->flush();
-        }
+                $entityManager->remove($event);
+                $entityManager->flush();
 
-        {
-            $transport = Transport::fromDsn('smtp://g.dev.informatique@gmail.com:djljvlbgzmdiazvr@smtp.gmail.com:587');
-            $mailer = new Mailer($transport);
-            $email = (new Email())
-                ->from('g.dev.informatique@gmail.com')
-                ->to('g.dev.informatique@gmail.com')
-                ->cc('g.dev.informatique@gmail.com')
-                //->bcc('bcc@example.com')
-                //->replyTo('fabien@example.com')
-                //->priority(Email::PRIORITY_HIGH)
-                ->subject('Votre évènement '.$event->getName().' de Sortir.com est supprimer')
-                ->text('Votre évenement '.$event->getName().' à bien été supprimer')
-                ->html('<p style="font-weight: normal">Votre évenement <span style="font-weight: bold">'.$event->getName().'</span> à bien été supprimer.</p>
-                    <p style="font-style: italic; font-weight: normal">Ceci est un message automatiquement envoyer.</p>
-                    ');
+                $this->addFlash('success', 'L\'événement a été supprimé.');
 
-            $mailer->send($email);
-
+            } else {
+                $this->addFlash('error', 'Vous n\'êtes pas habilité à supprimer cet événement.');
+            }
         }
 
         return $this->redirectToRoute('app_event');
     }
 
+    #[Route('/event/{id}/cancel', name: 'app_event_cancel', requirements: ['idEvent' => '\d+'])]
+    #[IsGranted('ROLE_ADMIN', message: 'Vous n\'êtes pas autorisé à annuler cet événement.')]
+    public function cancel(Request $request, Event $event, EntityManagerInterface $entityManager): Response
+    {
+        $host = $event->getHost();
+
+        if ($host->getId() == $this->getUser()->getId() || $this->isGranted('ROLE_ADMIN')) {
+            $status = $entityManager->getRepository(EventStatus::class)->find(6);
+            $event->setStatus($status);
+            $entityManager->persist($event);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'L\'événement a été annulé.');
+        } else {
+            $this->addFlash('error', 'Vous n\'êtes pas habilité à annuler cet événement.');
+        }
+
+        return $this->redirectToRoute('app_event');
+    }
 }
+

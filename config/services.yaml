@@ -1,10 +1,5 @@
-# This file is the entry point to configure your own services.
-# Files in the packages/ subdirectory configure your dependencies.
-
-# Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-
+    app.jwtsecret: '%env(JWT_SECRET)%'
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -20,5 +15,12 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+
+
+    App\Listener\EventListener:
+        arguments:
+            $eventStatusRepository: '@App\Repository\EventStatusRepository'
+            $entityManager: '@doctrine.orm.default_entity_manager'
+        tags:
+            - { name: 'doctrine.orm.entity_listener', event: 'postLoad' }
+        public: true

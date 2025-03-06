@@ -26,7 +26,7 @@ class EventFixtures extends Fixture
         $faker = \Faker\Factory::create('fr_FR');
 
         $statuses = [];
-        $statusLabels = ['OPEN', 'CLOSED', 'CANCELLED', 'ON GOING', 'DONE'];
+        $statusLabels = ['Créée', 'Ouverte', 'Clôturée', 'Activité en cours', 'passée', 'Annulée'];
 
         foreach ($statusLabels as $label) {
             $status = new EventStatus();
@@ -98,8 +98,12 @@ class EventFixtures extends Fixture
 
             $hashedPassword = $this->passwordHasher->hashPassword($user, $plainPassword);
             $user->setPassword($hashedPassword);
-            $user->setRoles(['ROLE_USER']);
-            $user->setAdministrator(false);
+            $user->setAdministrator($faker->boolean());
+            if ($user->isAdministrator() == true) {
+                $user->setRoles(['ROLE_ADMIN']);
+            } else {
+                $user->setRoles(['ROLE_USER']);
+            }
             $user->setActive(true);
             $campus = $faker->randomElement($campuses); // Prend un campus déjà créé
             $user->setCampus($campus);

@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Update{% endblock %}
+
+{% block body %}
+        <div class="profile_structure"
+             style="backdrop-filter: blur(10px); padding-left: 2%; padding-top: 2%; padding-bottom: 2%; margin-right: 30%; border-radius: 5px;  border: 1px solid whitesmoke">
+
+            {% if app.user.id == profile_id %}
+                <h1>Mon profil :</h1>
+
+                <ul style=" list-style-type: none">
+                    <li style="margin: 0.5rem; font-size: 24px"><strong>Nom : </strong> {{ user.lastName }}</li>
+                    <li style="margin: 0.5rem; font-size: 24px"><strong>Prénom : </strong> {{ user.firstName }}</li>
+                    <li style="margin: 0.5rem; font-size: 24px"><strong>Pseudo : </strong> {{ user.username }}</li>
+                    <li style="margin: 0.5rem; font-size: 24px"><strong>Email : </strong> {{ user.email }}</li>
+                    <li style="margin: 0.5rem; font-size: 24px"><strong>Téléphone : </strong> {{ user.phone }}</li>
+                    <li style="margin: 0.5rem; font-size: 24px"><strong>Campus : </strong> {{ user.campus.name }}</li>
+                </ul>
+                <a style="color: #73c866; font-size: 20px" href="{{ path('app_update', {'id': app.user.id}) }}" class="button">Modifier</a>
+
+            {% endif %}
+
+            {% if app.user.id != profile_id %}
+                <h1>Profil de {{ user.firstName }} :</h1>
+
+                <ul>
+                    <li><strong>Nom : </strong> {{ user.lastName }}</li>
+                    <li><strong>Prénom : </strong> {{ user.firstName }}</li>
+                    <li><strong>Pseudo : </strong> {{ user.username }}</li>
+                    <li><strong>Email : </strong> {{ user.email }}</li>
+                    <li><strong>Campus : </strong> {{ user.campus.name }}</li>
+                </ul>
+            {% endif %}
+        </div>
+{% endblock %}

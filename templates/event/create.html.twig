@@ -3,15 +3,33 @@
 {% block title %}Create{% endblock %}
 
 {% block body %}
-    <div class="form-container">
-        <div class="form-card">
-            <h1>Create</h1>
+    <div class="form-container" style="backdrop-filter: blur(10px); border-radius: 10px;  border: 1px solid whitesmoke; padding-left: 2% ; padding-right: 2%">
+    <div class="form-card" >
+        <h1>Create</h1>
 
-            {{ form_errors(createEventForm) }}
+        {{ form_errors(createEventForm) }}
 
-            {{ form_start(createEventForm) }}
+        {{ form_start(createEventForm) }}
+        <div class="container text-left" style="color: black">
+            <div class="row-cols-sm-1">
+                <div class="col" style="margin-top: 3%;margin-bottom: 3%;">{{ form_row(createEventForm.name) }}</div>
+                <div class="col" style="margin-top: 3%;margin-bottom: 3%;">{{ form_row(createEventForm.description) }}</div>
+                <div class="col" style="margin-top: 3%;margin-bottom: 3%;">{{ form_row(createEventForm.startAt) }}</div>
+                <div class="col" style="margin-top: 3%;margin-bottom: 3%;">{{ form_row(createEventForm.registrationEndsAt) }}</div>
+                <div class="col" style="margin-top: 3%;margin-bottom: 3%;">{{ form_row(createEventForm.duration) }}</div>
+                <div class="col" style="margin-top: 3%;margin-bottom: 3%;">{{ form_row(createEventForm.maxUsers) }}</div>
+                <div class="col" style="margin-top: 3%;margin-bottom: 3%;">{{ form_row(createEventForm.location.name) }}</div>
+                <div class="col" style="margin-top: 3%;margin-bottom: 3%;">{{ form_row(createEventForm.location.street) }}</div>
+        </div>
+    </div>
+        <div id="map" style="height: 400px;">
+            {{ ux_map(map, { style: 'height: 400px;' }) }}
+        </div>
 
-            {{ form_widget(createEventForm) }}
+        <div>
+            <input type="text" id="latitude" name="latitude" value="{{ event.location.latitude ?? '' }}" readonly>
+            <input type="text" id="longitude" name="longitude" value="{{ event.location.longitude ?? '' }}" readonly>
+        </div>
 
             {{ form_end(createEventForm) }}
         </div>

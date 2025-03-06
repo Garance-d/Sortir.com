@@ -1,13 +1,21 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Inscription{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}
 
 {% block body %}
-    <div class="form-container">
+<div style="backdrop-filter: blur(10px); margin-left: 25%; padding-bottom: 2%; margin-right: 25%; border-radius: 5px;  border: 1px solid whitesmoke">
+    <div class="form-container text-left" style="color: black">
         <div class="form-card">
-            <h1>Register</h1>
+            <h1>Inscription</h1>
 
-            {{ form_errors(registrationForm) }}
+        {% if registrationForm.vars.errors|length > 0 %}
+            <div class="alert">
+                {{ form_errors(registrationForm) }}
+            </div>
+        {% endif %}
 
             {{ form_start(registrationForm) }}
 
@@ -16,4 +24,5 @@
             {{ form_end(registrationForm) }}
         </div>
     </div>
+</div>
 {% endblock %}

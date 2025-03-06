@@ -3,24 +3,27 @@
 {% block title %}Liste des événements{% endblock %}
 
 {% block body %}
-    <div class="" id="filter" style="color: whitesmoke; ">
+    <div style="backdrop-filter: blur(10px); border-radius: 5px;  border: 1px solid whitesmoke; padding: 5%">
+    <div class="" id="filter" style="color: whitesmoke; font-size: 24px ">
+
         {{ form_start(filterForm) }}
 
         {{ form_widget(filterForm) }}
-        <button class="btn border-light mb-3" style="color: whitesmoke">Appliquer le filtre</button>
+        <button class="btn border-light mb-3" style="color: whitesmoke; font-size: 24px">Appliquer le filtre</button>
         {{ form_end(filterForm) }}
     </div>
 
-    <div class="container mt-4">
+    <div class="container">
         <div class="card">
             <div class="card-body">
                 <h2 class="card-title">Liste des événements</h2>
                 <table class="table table-striped">
                     <thead>
                     <tr>
-                        <th>Nom</th>
+                        <th >Nom</th>
                         <th>Date de début</th>
                         <th>Fin des inscriptions</th>
+                        <th>Durée</th>
                         <th>Participants</th>
                         <th>Description</th>
                         <th>Adresse</th>
@@ -35,6 +38,7 @@
                             <td><a href="{{ path('app_event_show', {'id': event.id}) }}">{{ event.name }}</a></td>
                             <td>{{ event.startAt|date('d/m/Y') }}</td>
                             <td>{{ event.registrationEndsAt|date('d/m/Y') }}</td>
+                            <td>{{ event.duration }}</td>
                             <td>{{ event.getUserCount() }}/{{ event.maxUsers }}</td>
                             <td>{{ event.description }}</td>
                             <td>{{ event.location.street }}</td>
@@ -45,10 +49,10 @@
                                 {% endif %}
                             </td>
                             <td>
-                                <a href="{{ path('app_event_edit', {'id': event.id}) }}" class="button">Éditer</a>
+                                <a style="font-size: 24px; border: 1px solid black" href="{{ path('app_event_edit', {'id': event.id}) }}" class="button">Éditer</a>
                                 <form method="post" action="{{ path('app_event_delete', {'id': event.id}) }}" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet événement ?');">
                                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ event.id) }}">
-                                    <button type="submit" class="button">Supprimer</button>
+                                    <button style="font-size: 24px; border: 1px solid black" type="submit" class="button">Supprimer</button>
                                 </form>
                             </td>
                         </tr>
@@ -61,5 +65,6 @@
                 </table>
             </div>
         </div>
+    </div>
     </div>
 {% endblock %}

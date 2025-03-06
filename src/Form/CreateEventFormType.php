@@ -43,10 +43,10 @@ class CreateEventFormType extends AbstractType
             ->add('location', LocationType::class, [
                 'label' => false,
             ])
-            ->add('status', EntityType::class, [
-                'class' => EventStatus::class,
-                'choice_label' => 'label',
-            ])
+//            ->add('status', EntityType::class, [
+//                'class' => EventStatus::class,
+//                'choice_label' => 'label',
+//            ])
             ->add('save', SubmitType::class, [
                 'label' => 'Enregistrer',
             ])
