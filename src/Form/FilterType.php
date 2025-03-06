@@ -45,14 +45,11 @@ class FilterType extends AbstractType
                 'label' => 'Événements pour lesquels je suis l\'organisateur.rice',
                 'required' => false,
             ])
-//        ;
-//        if ($user && in_array('ROLE_ADMIN', $user->getRoles())) {
-//            $builder
                 ->add('eventCheckbArchive', CheckboxType::class, [
                 'label' => 'Événements archivés',
                 'required' => false,
             ]);
-//        }
+
     }
     public function configureOptions(OptionsResolver $resolver) : void {
 
