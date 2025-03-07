@@ -6,3 +6,7 @@ php bin/console doctrine:fixtures:load --no-interaction
 
 UPDATE event
 SET host_id = FLOOR(1 + (RAND() * 5));
+
+J6lf7DB3PnYgqhU
+
+password123
