@@ -71,6 +71,18 @@ document.addEventListener("DOMContentLoaded", function () {
         var autocompleteList = document.createElement('ul');
         autocompleteList.classList.add('autocomplete-list');
         autocompleteList.style.width = addressInput.offsetWidth + 'px';
+
+        autocompleteList.style.backgroundColor = 'white';
+        autocompleteList.style.color = '#333'; // Texte foncé sur fond blanc
+        autocompleteList.style.border = '1px solid #ccc';
+        autocompleteList.style.borderRadius = '4px';
+        autocompleteList.style.padding = '5px 0';
+        autocompleteList.style.position = 'absolute';
+        autocompleteList.style.zIndex = '1000';
+        autocompleteList.style.listStyle = 'none';
+        autocompleteList.style.maxHeight = '200px';
+        autocompleteList.style.overflowY = 'auto';
+
         addressInput.parentNode.appendChild(autocompleteList);
         var debounceTimeout;
 

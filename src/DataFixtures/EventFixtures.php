@@ -69,7 +69,7 @@ class EventFixtures extends Fixture
             $event = new Event();
             $event->setName($faker->words(3, true));
             $event->setDescription($faker->paragraph());
-            $startAt = \DateTimeImmutable::createFromMutable($faker->dateTimeBetween('+1 day', '+30 days'));
+            $startAt = \DateTimeImmutable::createFromMutable($faker->dateTimeBetween('-30 day', '+30 days'));
             $event->setStartAt($startAt);
             $duration = $faker->numberBetween(30, 60);
             $event->setDuration($duration);
