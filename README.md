@@ -10,3 +10,5 @@ SET host_id = FLOOR(1 + (RAND() * 5));
 J6lf7DB3PnYgqhU
 
 password123
+
+https://chromewebstore.google.com/detail/fake-filler/bnjjngeaknajbdcgpfkgnonkmififhfo
